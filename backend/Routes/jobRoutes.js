@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const {getUsers, setUsers, updateUsers, deleteUsers} = require('../Controllers/HomeController')
+const {getJob, setJob, updateJob, deleteJob} = require('../Controllers/jobController')
 
 // router.get("/home", (req, res) => {
 //   res.json({message: "Get worked"})
 // })
-router.route('/home').get(getUsers).post(setUsers);
-router.route('/home/:id').put(updateUsers).delete(deleteUsers);
+const {protect} = require('../Middleware/authMiddleware')
+
+router.route('/job').get(protect, getJob).post(protect, setJob);
+router.route('/job/:id').put(protect, updateJob).delete(protect, deleteJob);
 
 // router.get("/home", getUsers)
 

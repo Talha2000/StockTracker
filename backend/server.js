@@ -42,20 +42,24 @@ mongoose
   .catch((err) => console.log(err));
 
 // Since mongoose's Promise is deprecated, we override it with Node's Promise
-mongoose.Promise = global.Promise;
+// mongoose.Promise = global.Promise;
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}));
 
 
-const HomeRoute = require('./Routes/HomeRoute');
-app.use('/api', HomeRoute);
+const JobRoutes = require('./Routes/jobRoutes');
+app.use('/api', JobRoutes);
+
+const UserRoutes = require('./Routes/userRoutes');
+app.use('/api', UserRoutes);
+
 
 app.use(errorHandler);
 
