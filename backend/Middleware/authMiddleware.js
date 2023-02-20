@@ -15,7 +15,7 @@ const protect = asyncHandler(async(req, res, next) => {
         try {
             // get the token from Bearer header
             token = req.headers.authorization.split(" ")[1]
-
+            console.log(token)
             // verify the token
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
 

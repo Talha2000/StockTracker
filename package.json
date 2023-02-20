@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
+  },
+  "scripts": {
+    "start": "node backend/server.js",
+    "start-watch": "nodemon backend/server.js",
+    "dev": "concurrently \"npm run start-watch\" \"cd stock-tracker-ui && npm start\""
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}
