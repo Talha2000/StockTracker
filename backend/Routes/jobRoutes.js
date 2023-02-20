@@ -51,3 +51,7 @@ module.exports = router;
 //     .then((data) => res.json(data))
 //     .catch(next);
 // });
+
+
+// CRUD
+// CREATE Read, UPDATE, DELETE
