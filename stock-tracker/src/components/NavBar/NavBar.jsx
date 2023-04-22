@@ -27,12 +27,14 @@ export const NavBar = () => {
           <Link className='link' to="/Portfolio">
               Portfolio
           </Link>
-          
+
           {currentUser ? (
-            <span className='logout' onClick={logout}>Logout</span>
+            <Link className='link' to="/login" onClick={logout}>Logout</Link>
             ) : (
             <Link className='link' to="/login">Login</Link>
             )}
+
+          
         </div>
       </div>
     </nav>
