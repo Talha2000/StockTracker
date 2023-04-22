@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState} from 'react'
 import Card from '../components/Card/Card'
 import { StockContext } from '../context/stockContext'
 import { Link, useNavigate} from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const Portfolio = () => {
   const {stockList, getStocks, stockQuote} = useContext(StockContext);
@@ -53,15 +54,25 @@ const Portfolio = () => {
               <tbody className="">
                 {
                   stockList.map((item, index) => (
-                    <tr className="border-b-2 border-t-2 border-cyan-600" key={index}>
+                      <motion.tr 
+                        className="border-b-2 border-t-2 border-cyan-600" 
+                        key={index}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.2, staggerChildren: 0.5 }}>
+                      
                       <td>
-                        <button onClick={() => navigateStock(item.stockName)}
+                        <button 
+                          onClick={() => navigateStock(item.stockName)}
                           className='p-2 m-2 bg-neutral-200 rounded-lg w-1/2 text-black hover:bg-cyan-600 hover:text-white '>
                           {item.stockName}
                         </button>
                       </td>
-                      <td>{stockPrices[index] ?? '---'}</td>
-                    </tr>
+
+                      <td>
+                        {stockPrices[index] ?? '---'}
+                      </td>
+                    </motion.tr>                    
                   ))
                 }
               </tbody>

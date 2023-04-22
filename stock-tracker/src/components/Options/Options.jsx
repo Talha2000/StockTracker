@@ -8,6 +8,8 @@ import { StockContext } from '../../context/stockContext';
 import { AuthContext } from '../../context/authContext';
 
 import {EyeIcon, EyeOffIcon} from '@heroicons/react/solid'
+import { motion } from "framer-motion"
+
 
 const Options = ({data, user}) => {
     const {stockSymbol, saveStock, stockList, getStocks} = useContext(StockContext);
@@ -44,29 +46,60 @@ const Options = ({data, user}) => {
         await(saveStock(stockSymbol));
         setOption(false);
     }
-  return (
-    <Card>
-        <ul className='w-full h-full flex justify-center '>
-            <li className='flex items-center justify-center space-x-5'>
-            {
-                option ? (<button className='btn-options hover:text-sky-700'
-                    type="button" onClick={removeBookMark}> 
-                    <EyeOffIcon className='w-9'/>
-                </button>)
-                :
-                (<button className='btn-options hover:text-sky-700'
-                    type="button" onClick={bookMark}> 
-                    <EyeIcon className='w-9'/>
-                </button>)
-            }
-               
-                <button className='btn-options ' type="button"> Buy </button>
 
-                <button className='btn-options' type="button"> Sell </button>
-            </li>
-        </ul>
-    </Card>
-  )
+    
+    const variants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: { opacity: 1, y: 0, transition: { delay: 1 } },
+    };
+
+    return (
+        <Card>
+            <ul className='w-full h-full flex justify-center '>
+                <li className='flex items-center justify-center space-x-5'>
+                {
+                    option ? (
+                        <motion.button 
+                                className='btn-options hover:text-sky-700'
+                                type="button" onClick={removeBookMark}
+                                variants={variants}
+                                initial='hidden'
+                                animate='visible'
+                                > 
+                                <EyeOffIcon className='w-9'/>
+                        </motion.button>)
+                    :
+                    (
+                        <motion.button className='btn-options hover:text-sky-700'
+                                type="button" onClick={bookMark}
+                                variants={variants}
+                                initial='hidden'
+                                animate='visible'
+                                > 
+                                <EyeIcon className='w-9'/>
+                        </motion.button>
+                    )
+                }
+                
+                    <motion.button className='btn-options' 
+                            type="button"
+                            variants={variants}
+                            initial='hidden'
+                            animate='visible'> 
+                        Buy 
+                    </motion.button>
+
+                    <motion.button className='btn-options' 
+                            type="button"
+                            variants={variants}
+                            initial='hidden'
+                            animate='visible'>
+                        Sell 
+                    </motion.button>
+                </li>
+            </ul>
+        </Card>
+    )
 }
 
 export default Options

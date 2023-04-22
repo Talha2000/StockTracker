@@ -82,11 +82,13 @@ const Chart = () => {
             <AreaChart data={data}>
                 <defs>
                     <linearGradient id="chartColor" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="rgb(199 210 254)" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="rgb(199 210 254)" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="white" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="white" stopOpacity={0.2}/>
                     </linearGradient>
                 </defs>
                 <Tooltip
+                    // contentStyle={{ backgroundColor: "#111827" }}
+                    // itemStyle={{ color: "#818cf8" }}
                     contentStyle={{ backgroundColor: "#111827" }}
                     itemStyle={{ color: "#818cf8" }}
                 />
