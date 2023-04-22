@@ -1,0 +1,74 @@
+// NAVBAR styling
+$colorBG: #1f1f38;
+$colorBGvariant: #0e5b6e;
+$color-primary: rgb(10, 212, 248);
+$color-primary-variant: rgba(77, 181, 255, 0.4);
+$color-blue: #09f0d1;
+$color-white: #fff;
+$color-light: rgba(255, 255, 255, 0.6);
+$color-dark: #000000;
+
+
+
+.navbar {
+
+    .container {
+        // padding: 10px 0px;
+        // // padding: 10px 100px 10px 10px;
+        // display: flex;
+        // align-items: center;
+        // justify-content: space-between;
+        background: $colorBG;
+        width: max-content;
+        display: block;
+        padding: 0.7rem 1.7rem;
+        z-index: 2;
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.8rem;
+        border-radius: 3rem;
+        backdrop-filter: blur(15px);
+
+
+        .logo{}
+        .links{
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            // background-color: white;
+
+            .link {
+                background: transparent;
+                padding: 0.9rem;
+                border-radius: 50%;
+                display: flex;
+                // color: $color-light;
+                color: $color-white;
+                font-size: 1.1rem;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.3);
+                    color: $color-blue;
+                }
+            }
+
+            .logout{
+                color: $color-white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.3);
+                    color: $color-blue;
+                }
+            }
+
+        }
+
+        
+    }
+}
