@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background:transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #a5b4fc;
+        width:5px;
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar-dark::-webkit-scrollbar-thumb {
+        background-color: #312e81;
+    }
+
+    .btn-options {
+        @apply w-28 m-2 h-12 border-1 
+        rounded flex items-center justify-center rounded-full hover:text-sky-700 font-bold
+        cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 hover:bg-cyan-300;
+    }
+}
+
+/* body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+} */

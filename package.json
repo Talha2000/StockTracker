@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^8.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "nodemon": "^2.0.22",
+    "react-router-dom": "^6.10.0"
+  },
+  "scripts": {
+    "start": "node API/index.js",
+    "start-watch": "nodemon API/index.js",
+    "dev": "concurrently \"npm run start-watch\" \"cd stock-tracker && npm start\""
+  }
+}

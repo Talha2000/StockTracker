@@ -1,0 +1,23 @@
+.ulStyle {
+    position: absolute;
+    top: 12px;
+    border: 2px;
+    width: 100%;
+    border-radius: 50%;
+    height: 64px;
+    overflow-y: scroll;
+    background-color: black;
+
+    .listItem{
+        cursor: pointer;
+        padding: 4px;
+        margin: 2px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:hover {
+            background-color: indigo;
+        }
+    }
+}
