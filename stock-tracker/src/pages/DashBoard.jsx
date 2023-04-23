@@ -16,11 +16,13 @@ const DashBoard = () => {
   const {stockSymbol, setStockSymbol, companyDetails, setQuote, quote, stockQuote, companyNews, getStocks, stockList} = useContext(StockContext);
   const {currentUser} = useContext(AuthContext);
   const [stockDetails, setStockDetails] = useState({});
-  const { stockName } = useParams();
-
   const [news, setNews] = useState([]);
   const navigate = useNavigate();
-  
+
+
+  const { stockName } = useParams();
+  const [ symbol, setSymbol ] = useState();
+
   const formatDate = () => {
     const endDateString = new Date();
     const startDateString = new Date();
@@ -31,17 +33,35 @@ const DashBoard = () => {
     return {startDate, endDate};
   };
 
+  const checkParam = () => {
+    if (stockName !== undefined) {
+      // setSymbol(stockName)
+      console.log("This is the stockName in IF: " + stockName)
+      // console.log("this is the IF: " + symbol)
+      return stockName
+    }
+    else {
+      // setSymbol(stockSymbol)
+      console.log("This is the ELSE: " + stockSymbol)
+      return "META"
+    }
+  };
+
   //If there is any change in the stockSymbol, this hook is called
   useEffect(() => { 
-    if (stockName !== undefined) {
-      setStockSymbol(stockName);
+
+    const getSymbol = async () => {
+      setSymbol(await checkParam());
+      console.log("this is the symbol after check Param: " + symbol);
+      console.log("After functin call " + symbol);
+      getInfo();
+      getCompanyData();
     }
-    console.log("called dashboard: " + stockSymbol)
+    
     // get all the stocks the user has already BookMarked from the userStocks table
     const getInfo = async () => {
       try {
         console.log("getInfo called")
-
           await(getStocks());
           console.log("getStocks done")
       }
@@ -54,11 +74,14 @@ const DashBoard = () => {
       try {
         console.log("getCompanyData called")
         const {startDate, endDate } = await formatDate();
-        const responseDetails = await companyDetails(stockSymbol);
+
+        const responseDetails = await companyDetails(stockName);
         setStockDetails(responseDetails);
-        const responseQuote = await stockQuote(stockSymbol);
+
+        const responseQuote = await stockQuote(stockName);
         setQuote(responseQuote);
-        const responseNews = await companyNews(stockSymbol, startDate, endDate);
+
+        const responseNews = await companyNews(stockName, startDate, endDate);
         setNews(responseNews);
       } catch (error) {
         setStockDetails({});
@@ -67,14 +90,16 @@ const DashBoard = () => {
         console.log(error)
       };
     };
-    getInfo();
-    getCompanyData();
+
+    getSymbol();
     
     const interval = setInterval(() => {
       getCompanyData(); // call the API every 5 minutes
     }, 5 * 60 * 1000);
     return () => clearInterval(interval); // clean up the interval
-  }, [stockSymbol, currentUser, navigate]); // stockSymbol is the dependency for the useEffect
+  }, [currentUser, stockName, navigate]); // stockSymbol is the dependency for the useEffect
+
+  // console.log("called dashboard: " + symbol)
 
   const variants = {
     hidden: { opacity: 0, y : 0},
@@ -98,7 +123,7 @@ const DashBoard = () => {
                   animate={{opacity: 1, transition: { duration: 2 }}}
                 >
         <Overview 
-          symbol={stockSymbol} 
+          symbol={stockName} 
           price={quote.pc}
           change={quote.d} 
           changePercent={quote.dp} 

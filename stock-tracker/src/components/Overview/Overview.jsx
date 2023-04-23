@@ -2,6 +2,8 @@ import React from 'react'
 import Card from '../Card/Card'
 
 const Overview = ({ symbol, price, change, changePercent, currency }) => {
+  // console.log("this is the symbol in overview " + symbol)
+  // console.log(price)
   return (
     <Card>
         <span className='absolute left-4 top-4 text-lg xl:text-xl 2xl:text-2xl'>{symbol}</span>

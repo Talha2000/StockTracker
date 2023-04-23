@@ -83,7 +83,7 @@ const Chart = () => {
                 <defs>
                     <linearGradient id="chartColor" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="white" stopOpacity={0.9}/>
-                    <stop offset="95%" stopColor="white" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="cyan" stopOpacity={0.2}/>
                     </linearGradient>
                 </defs>
                 <Tooltip
