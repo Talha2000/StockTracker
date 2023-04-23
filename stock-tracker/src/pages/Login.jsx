@@ -25,7 +25,7 @@ const Login = () => {
     try {
       // await axios.post("/auth/login", inputs);
       await login(inputs);
-      navigate("/");
+      navigate("/META");
     }
     catch (err) {
       setError(err.response.data)

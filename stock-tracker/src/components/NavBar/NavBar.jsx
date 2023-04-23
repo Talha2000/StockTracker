@@ -4,6 +4,14 @@ import { Link } from 'react-router-dom'
 import "./navbar.scss"
 import { AuthContext, logout } from '../../context/authContext'
 import { useNavigate } from 'react-router-dom'
+
+// import {AiOutlineHome} from 'react-icons/ai'
+// import {AiOutlineUser} from 'react-icons/ai'
+// import {BiBook} from 'react-icons/bi'
+// import {MdWork} from 'react-icons/md'
+// import {BiMessageDetail} from 'react-icons/bi'
+import {useState} from 'react'
+
 export const NavBar = () => {
 
   const {currentUser, logout} = useContext(AuthContext);
@@ -13,6 +21,7 @@ export const NavBar = () => {
     navigate(`/:META`)  
   }
 
+  const [activeNav, setActiveNav] = useState('/META');
   return (
     <nav className='navbar'>
       <div className="container">

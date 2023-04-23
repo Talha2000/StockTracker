@@ -109,7 +109,7 @@ const DashBoard = () => {
   return (
     <motion.div className='text-white pb-20 pt-10 h-screen w-screen grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-rows-8 md:grid-rows-7 xl:grid-rows-5 auto-rows-fr gap-6 p-10 font-quicksand bg-mainBg'>
 
-      <motion.div className="col-span-1 md:col-span-2 xl:col-span-3 row-span-1 flex justify-start items-center transition-opacity duration-1000"
+      <motion.div className="mt-10 col-span-1 md:col-span-2 xl:col-span-3 row-span-1 flex justify-start items-center" style={{ zIndex: '1' }}
                   variants={variants}
                   initial='hidden'
                   animate='visible'
@@ -117,7 +117,7 @@ const DashBoard = () => {
         <Search/>
       </motion.div>
 
-      <motion.div className=""
+      <motion.div className="mt-5" style={{ zIndex: '0' }}
                   variants={variants}
                   initial='hidden'
                   animate={{opacity: 1, transition: { duration: 2 }}}
@@ -131,7 +131,7 @@ const DashBoard = () => {
         />
       </motion.div>
 
-      <motion.div className="md:col-span-2 row-span-3"
+      <motion.div className="mt-5 md:col-span-2 row-span-3"
                   variants={variants}
                   initial='hidden'
                   animate={{opacity: 1, transition: { delay: 2}}}
