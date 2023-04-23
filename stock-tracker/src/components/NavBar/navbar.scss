@@ -9,11 +9,22 @@ $color-light: rgba(255, 255, 255, 0.6);
 $color-dark: #000000;
 
 
+// nav a:hover {
+//     background: rgba(0, 0, 0, 0.3);
+//     /* background: red; */
+// }
+
+// nav a.active {
+//     background: var(--color-bg);
+//     /* background: red; */
+//     color: var(--color-white);
+// }
+
 .navbar {
     .container {
+        margin-top: 10px;
         background-image: linear-gradient(to right, $colorBGvariant, $color-primary);
         width: max-content;
-        display: block;
         padding: 0.1rem 0.2rem;
         z-index: 2;
         position: fixed;
@@ -23,7 +34,7 @@ $color-dark: #000000;
         gap: 0.8rem;
         border-radius: 1.5rem;
         transition: all 0.3s ease-out; /* add a transition to all properties */
-        // backdrop-filter: blur(15px);
+        backdrop-filter: blur(15px);
 
 
         .logo{}

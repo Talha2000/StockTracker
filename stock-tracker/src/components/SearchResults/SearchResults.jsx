@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import {StockContext} from '../../context/stockContext'
 import { useNavigate } from 'react-router-dom';
 
-// import './searchResult.scss'
 const SearchResults = ({ results }) => {
 
   const {setStockSymbol} = useContext(StockContext)
@@ -12,11 +11,12 @@ const SearchResults = ({ results }) => {
   // }
   // changeStockSymbol(item)
   return (
-    <ul className='absolute top-12 border-2 w-full rounded-md h-64 overflow-y-scroll text-black bg-white border-neutral-200 custom-scrollbar'>
+  // <div className="">
+    <ul className='absolute top-12 border-2 w-full rounded-md h-64 overflow-y-scroll  bg-gray-900 border-gray-800 custom-scrollbar'>
         {results.map((item) => {
             return (
                 <li key={item.symbol} 
-                  className='cursor-pointer p-4 m-2 flex items-center justify-between rounded-md hover:bg-cyan-100'
+                  className='cursor-pointer p-4 m-2 flex items-center justify-between rounded-md hover:bg-white hover:text-black transition duration-300'
                   onClick={() => {setStockSymbol(item.symbol); navigate(`/${item.symbol}`)} }> 
                   <span> {item.symbol} </span>
                   <span> {item.description} </span>
@@ -24,6 +24,8 @@ const SearchResults = ({ results }) => {
             );
         })};
     </ul>
+
+    // </div>
   );
 };
 

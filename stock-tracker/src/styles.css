@@ -24,7 +24,7 @@
 
     .btn-options {
         @apply w-28 m-2 h-12 border-1 
-        rounded flex items-center justify-center rounded-full hover:text-sky-700 font-bold
+        rounded flex items-center justify-center rounded-md hover:text-sky-700 font-bold
         cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 hover:bg-cyan-300;
     }
 }
