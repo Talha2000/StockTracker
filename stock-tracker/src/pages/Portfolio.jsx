@@ -42,13 +42,13 @@ const Portfolio = () => {
 
   return (
       <div className='h-screen w-screen bg-mainBg flex justify-center items-center'>
-        <div className='h-1/2 w-1/2 border flex justify-center items-center text-white'>
-          <div className='positive absolute top-20 text-3xl'>My Portfolio</div>
-          <table className="table-fixed m-32 border-cyan-600 rounded-lg text-center w-screen text-white align-center">
+        <div className='h-1/2 w-1/2 flex justify-center items-center text-white'>
+          <div className='positive absolute top-32 text-3xl'>My Portfolio</div>
+          <table className="table-fixed sm:w-screen sm:m-1  border border-cyan-600 rounded-lg text-center text-white align-center">
               <thead>
                 <tr>
                   <th className='p-4'>Stock Name</th>
-                  <th className=''>Current Price</th>
+                  <th className='p-4'>Current Price</th>
                 </tr>
               </thead>
               <tbody className="">

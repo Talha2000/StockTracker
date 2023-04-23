@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { StockContextProvider } from './context/stockContext';
 import NavBar from "./components/NavBar/NavBar"
 import DashBoard from "./pages/DashBoard";
@@ -15,10 +15,14 @@ function App() {
         <StockContextProvider>
           <NavBar/>
           <Routes>
-            <Route path='/' element={<DashBoard />}>
+          {/* <Route exact path={"/META"} element={<DashBoard/>} /> */}
+          <Route exact path={"/:stockName"} element={<DashBoard/>} />
+          {/* <Route exact path={"/"} element={<DashBoard/>} /> */}
+          {/* <IndexRedirect to="/" /> */}
+          {/* <Route path="/" element={<DashBoard/>}>
               <Route path='/:stockName' element={<DashBoard/>} />
-              <Route path='/META' element={<DashBoard/>} />
-            </Route>
+              <Route path='/:META' element={<DashBoard/>} />
+          </Route> */}
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register/>} />
             <Route path='/Portfolio' element={<Portfolio/>} />

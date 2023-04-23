@@ -10,7 +10,7 @@ export const NavBar = () => {
   const navigate = useNavigate();
 
   const defaultPage = () => {
-    navigate(`/${'META'}`)  
+    navigate(`/:META`)  
   }
 
   return (
