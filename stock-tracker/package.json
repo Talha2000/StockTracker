@@ -1,7 +1,7 @@
 {
   "name": "stock-tracker",
   "version": "0.1.0",
-  "proxy": "https://localhost:5000/api/",
+  "proxy": "http://localhost:5000/api/",
   "homepage": "https://localhost:3000/META",
   "private": true,
   "dependencies": {
