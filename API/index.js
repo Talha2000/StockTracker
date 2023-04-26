@@ -3,7 +3,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const {errorHandler} = require('./Middleware/errorHandler')
 const bodyParser = require('body-parser');
-const cors = require('cors')
 // const dotenv = require('dotenv');
 // dotenv.config();
 
@@ -40,6 +39,6 @@ app.use('/api/users', UserRoutes);
 //   res.json("hello this is the backend")
 // })
 
-app.listen(process.env.PORT || PORT, ()=> {
+app.listen(process.env.PORT || 5000, ()=> {
     console.log(`Server running on port ${PORT}`);
 })
