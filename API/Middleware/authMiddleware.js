@@ -5,7 +5,7 @@ const protect = (req, res, next) => {
     // with the current http request sent to the API
     // check the access_token which has the cookie stored in it.\
     // This cookie was signed with JWT stuff
-    console.log("this is the request: " req)
+    console.log("this is the request: " + req)
     const token = req.cookies.access_token;
     console.log("this is the current users token" + token);
 
