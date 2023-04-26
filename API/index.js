@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const {errorHandler} = require('./Middleware/errorHandler')
 const bodyParser = require('body-parser');
+const cors = require('cors')
 // const dotenv = require('dotenv');
 // dotenv.config();
 
@@ -20,11 +21,11 @@ app.use((req, res, next) => {
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}));
-app.use(
-  cors({
-    origin:["http://localhost:3000", "https://stocktrackerapi.onrender.com"],
-  })
-);
+// app.use(
+//   cors({
+//     origin:["http://localhost:3000", "https://stocktrackerapi.onrender.com"],
+//   })
+// );
 
 
 app.use(errorHandler);
