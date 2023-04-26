@@ -2,6 +2,7 @@
   "name": "stock-tracker",
   "version": "0.1.0",
   "proxy": "http://localhost:5000/api/",
+  "homepage": "https://Talha2000.github.io/StockTrackerMain",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^1.0.6",
@@ -23,6 +24,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -46,5 +49,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage":"http://localhost:3000/META"
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
+  }
 }
