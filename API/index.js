@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 
 
 const app = express()
+const PORT = 5000;
+
 app.use(cookieParser())
 
 app.use((req, res, next) => {
