@@ -3,7 +3,7 @@ const router = express.Router();
 const {getMe} = require('../controllers/userController')
 const {protect} = require('../Middleware/authMiddleware')
 
-router.get('/me', protect, getMe)
+router.get('/me', getMe)
 // router.get("/users", (req, res) => {
 //     res.json("hello this is the backend")
 //   })
