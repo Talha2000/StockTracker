@@ -1,8 +1,8 @@
 {
   "name": "stock-tracker",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000/api/",
-  "homepage": "https://Talha2000.github.io/StockTrackerMain",
+  "proxy": "https://localhost:5000/api/",
+  "homepage": "https://localhost:3000/META",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^1.0.6",
