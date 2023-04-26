@@ -18,12 +18,4 @@ var db = sql.createConnection({
     console.log('Connected to the database successfully!');
   });
 
-// const poolPromise = new db.ConnectionPool(config)  
-// .connect()  
-// .then(pool => {  
-// console.log('Connected to MSSQL')  
-// return pool  
-// })  
-// .catch(err => console.log('Database Connection Failed! Bad Config: ', err))  
-
 module.exports = db;
