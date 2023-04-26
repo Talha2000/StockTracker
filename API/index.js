@@ -21,11 +21,6 @@ app.use((req, res, next) => {
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}));
-// app.use(
-//   cors({
-//     origin:["http://localhost:3000", "https://stocktrackerapi.onrender.com"],
-//   })
-// );
 
 
 app.use(errorHandler);
@@ -45,7 +40,6 @@ app.use('/api/users', UserRoutes);
 //   res.json("hello this is the backend")
 // })
 
-const port = process.env.PORT
-app.listen(port, ()=> {
-    console.log(`Server running on port ${port}`);
+app.listen(process.env.PORT || PORT, ()=> {
+    console.log(`Server running on port ${PORT}`);
 })
