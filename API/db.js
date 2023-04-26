@@ -2,10 +2,14 @@ require('dotenv').config()
 const sql = require('mysql2');
 
 var db = sql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    // host: process.env.DB_HOST,
+    // user: process.env.DB_USER,
+    // password: process.env.DB_PASSWORD,
+    // database: process.env.DB_DATABASE,
+    host: '35.223.45.3',
+    user:'dev',
+    password: 'dev',
+    database:'devData'
   });
 
 
