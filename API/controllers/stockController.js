@@ -42,10 +42,13 @@ const saveStock = (req, res)=>{
 
 const getStocks = async(req, res) => {
     // get the current user logged in
-    const user_id = req.user.id;
+    // const user_id = req.user.id;
+    const userId = req.user.id;
+    console.log("this is the userId " + userId)
+    // console.log("This is the acess_token " + req.headers['authorization'])
 
     const q = "SELECT * FROM userStocks WHERE id = ?";
-    db.query(q, [user_id], (err, results) => {
+    db.query(q, [userId], (err, results) => {
       if (err) {
         console.log(err);
         return res.status(500).json({ message: "Server error" });

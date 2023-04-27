@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 
 const app = express()
-const PORT = 5000;
+// const PORT = 5000;
 
 app.use(cookieParser())
 
@@ -42,5 +42,5 @@ app.use('/api/users', UserRoutes);
 // })
 
 app.listen(process.env.PORT || 5000, ()=> {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${process.env.PORT}`);
 })

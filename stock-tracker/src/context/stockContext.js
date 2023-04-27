@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import axios from "axios";
+import { AuthContext } from "./authContext";
 
 export const StockContext = createContext();
 
@@ -8,8 +9,8 @@ const basePath = "https://finnhub.io/api/v1";
 const api_key = "cgk8knpr01qq3c3u2ma0cgk8knpr01qq3c3u2mag"
 
 export const StockContextProvider = ({children}) => {
-  const [stockSymbol, setStockSymbol] = useState("META");
-
+    const [stockSymbol, setStockSymbol] = useState("META");
+    const {getAuthToken} = useContext(AuthContext);
     const [quote, setQuote] = useState({});
     const [stockList, setStockList ] = useState([]);
 
@@ -45,18 +46,7 @@ export const StockContextProvider = ({children}) => {
       }
       return await response.json();
     };
-
-    // Stock price batch API - takes in an array of stock names and returns an array with the prices
-    // const stockQuoteBatch = async (symbols) => {
-    //   const url = `${basePath}/quote?symbol=${symbols}&token=${api_key}`;
-    //   const response = await fetch(url);
-    //   if (!response.ok) {
-    //     const message = `An error has occured: ${response.status}`;
-    //     throw new Error(message);
-    //   }
-    //   return await response.json();
-    // }
-
+    
     // Stock Candles
     const stockCandles= async (symbol, resolution, from, to) => {
       const url = `${basePath}/stock/candle?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${to}&token=${api_key}`;
@@ -94,7 +84,8 @@ export const StockContextProvider = ({children}) => {
 
     // get user stocks from database
     const getStocks = async () => {
-      const res = await axios.get("/stock/getStocks")
+      const authToken = getAuthToken();
+      const res = await axios.get("/stock/getStocks", authToken)
       if (res.status == 200) {
         setStockList(res.data);
       } else {
