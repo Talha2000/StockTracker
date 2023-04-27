@@ -46,15 +46,20 @@ const login = (req, res)=>{
         
         if (!validatePassword) return res.status(400).json("Wrong username or password!")
         
-        const token = jwt.sign({ id: data[0].id }, 'cookie', {expiresIn: '30d' });
-        const {password, ...other} = data[0];
-        // const {id, username, email, password} = data[0];
+        
+        // const {password, ...other} = data[0];
+        const {id} = data[0];
+        const user = { id: id, user: req.body.username}
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN);
+        console.log("This is the user object I want to sign " + user.id)
 
-        res
-        .cookie("access_token", token, {
-            httpOnly: true,
-            path: "/",
-        }).status(200).json(other);
+
+        res.json(token)
+        // res
+        // .cookie("access_token", token, {
+        //     httpOnly: true,
+        //     path: "/",
+        // }).status(200).json(other);
     });
 };
 
