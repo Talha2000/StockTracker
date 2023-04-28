@@ -44,7 +44,6 @@ const DashBoard = () => {
 
   //If there is any change in the stockSymbol, this hook is called
   useEffect(() => { 
-    console.log(currentUser)
     if (currentUser == null) {
       navigate('/login')
     }
