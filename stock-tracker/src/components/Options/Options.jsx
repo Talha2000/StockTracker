@@ -55,12 +55,12 @@ const Options = ({data, user}) => {
 
     return (
         <Card>
-            <ul className='w-full h-full flex justify-center '>
-                <li className='flex items-center justify-center space-x-5'>
+            <ul className='w-full h-full flex justify-center'>
+                <li className='w-full flex items-center justify-center space-x-5 lg:text-lg xl:text-xl 2xl:text-2xl'>
                 {
                     option ? (
                         <motion.button 
-                                className='btn-options hover:text-sky-700'
+                                className='btn-options'
                                 type="button" onClick={removeBookMark}
                                 variants={variants}
                                 initial='hidden'
@@ -70,7 +70,7 @@ const Options = ({data, user}) => {
                         </motion.button>)
                     :
                     (
-                        <motion.button className='btn-options hover:text-sky-700'
+                        <motion.button className='btn-options'
                                 type="button" onClick={bookMark}
                                 variants={variants}
                                 initial='hidden'

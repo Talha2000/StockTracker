@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
     .custom-scrollbar::-webkit-scrollbar {
         width: 4px;
@@ -24,9 +23,17 @@
 
     .btn-options {
         @apply w-28 m-2 h-12 border-1 
-        rounded flex items-center justify-center rounded-md hover:text-sky-700 font-bold
-        cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 hover:bg-cyan-300;
+        rounded flex items-center justify-center rounded-md hover:bg-hoverButton font-bold
+        cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 ;
     }
+
+    /* .card-container { */
+          /* width: 100%; use relative or percentage-based unit */
+            /* height: auto; let the height be determined by the content */
+            /* padding: 2rem; adjust padding to make the content fit */
+            /* border-radius: 0.375rem; use same value as rounded-md */
+            /* border: 0.125rem solid #38B2AC; use same color as border-cyan-600 */
+    /* } */
 }
 
 /* body {

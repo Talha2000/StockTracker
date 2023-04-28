@@ -18,7 +18,7 @@ const StockInfo = ({data}) => {
 
     return (
         <Card>
-            <ul className='w-full h-full flex flex-col justify-between divide-y-1'>
+            <ul className='pr-2 w-full h-full flex flex-col justify-between divide-y-1 overflow-y-scroll custom-scrollbar xl:pr-0   '>
                 {Object.keys(dataList).map((item, index) => {
                     return (
                     <AnimatePresence key={item}>
@@ -29,7 +29,7 @@ const StockInfo = ({data}) => {
                             transition={{ delay: index * 0.3, staggerChildren: 0.5 }}
                         >
 
-                            <motion.span>
+                            <motion.span className='flex justify-items-end'>
                                 {dataList[item]}
                             </motion.span>
 

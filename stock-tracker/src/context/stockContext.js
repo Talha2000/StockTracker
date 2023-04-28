@@ -71,7 +71,7 @@ export const StockContextProvider = ({children}) => {
 
     // BookMark the stock
     const saveStock = async (symbol) => {
-        const res = await axios.post("/stock/saveStock", {symbol});
+        const res = await axios.post("/api/stock/saveStock", {symbol});
         if (res.status >= 200 && res.status < 300) {
           console.log('Successfully bookmarked: ' + symbol);
         }
@@ -84,12 +84,20 @@ export const StockContextProvider = ({children}) => {
 
     // get user stocks from database
     const getStocks = async () => {
-      const authToken = getAuthToken();
-      const res = await axios.get("/stock/getStocks", authToken)
+      const authToken = await getAuthToken();
+      console.log(authToken)
+
+      const res = await axios.get("/api/stock/getStocks", authToken)
+      console.log(res.data);
+      // const res = await axios.get("https://stocktrackerapi.onrender.com/api/stock/getStocks", authToken)
       if (res.status == 200) {
         setStockList(res.data);
-      } else {
-        console.log('No data');
+      } 
+      else if (res.status == 401) {
+          console.log("This is hit with 401");
+      }
+      else {
+        console.log("There was an error in retrieving the data")
       }
     }
 

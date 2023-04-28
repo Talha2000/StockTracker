@@ -64,7 +64,7 @@ const Chart = () => {
 
   return (
     <Card>
-        <ul className='flex absolute top-2 right-2 z-40'>
+        <ul className='flex absolute top-0 right-2 z-40'>
             {Object.keys(chartConfig).map((item) => {
                 return (
                     <li key={item}>

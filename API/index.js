@@ -3,12 +3,15 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const {errorHandler} = require('./Middleware/errorHandler')
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 // const dotenv = require('dotenv');
 // dotenv.config();
 
 
 const app = express()
 // const PORT = 5000;
+app.use(cors());
 
 app.use(cookieParser())
 
