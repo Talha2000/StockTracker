@@ -52,8 +52,6 @@ const login = (req, res)=>{
         const user = { id: id, user: req.body.username}
         const token = jwt.sign(user, process.env.ACCESS_TOKEN);
         console.log("This is the user object I want to sign " + user.id)
-
-
         res.json(token)
         // res
         // .cookie("access_token", token, {
