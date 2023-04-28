@@ -16,10 +16,10 @@ function App() {
           <NavBar/>
           <Routes>
           {/* <Route exact path={"/META"} element={<DashBoard/>} /> */}
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register/>} />
-          <Route path='/Portfolio' element={<Portfolio/>} />
-          <Route exact path={"/:stockName"} element={<DashBoard/>} />
+          <Route path='StockTrackerMain/login' element={<Login />} />
+          <Route path='StockTrackerMain/register' element={<Register/>} />
+          <Route path='StockTrackerMain/Portfolio' element={<Portfolio/>} />
+          <Route exact path={"StockTrackerMain/:stockName"} element={<DashBoard/>} />
           </Routes>
         </StockContextProvider>
         </div>
