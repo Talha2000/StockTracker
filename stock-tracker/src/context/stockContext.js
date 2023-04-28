@@ -71,25 +71,20 @@ export const StockContextProvider = ({children}) => {
 
     // BookMark the stock
     const saveStock = async (symbol) => {
-        const res = await axios.post("/api/stock/saveStock", {symbol});
+      const authToken = await getAuthToken();
+        const res = await axios.post("/api/stock/saveStock", {symbol}, authToken);
         if (res.status >= 200 && res.status < 300) {
           console.log('Successfully bookmarked: ' + symbol);
         }
         else {
           console.log('failed to bookmark, most likely stock is already bookmarked');
         }
-
-        // console.log("this is the saveStock api: " + res.data);
     }
 
     // get user stocks from database
     const getStocks = async () => {
       const authToken = await getAuthToken();
-      console.log(authToken)
-
       const res = await axios.get("/api/stock/getStocks", authToken)
-      console.log(res.data);
-      // const res = await axios.get("https://stocktrackerapi.onrender.com/api/stock/getStocks", authToken)
       if (res.status == 200) {
         setStockList(res.data);
       } 
