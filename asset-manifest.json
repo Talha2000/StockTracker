@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/META/static/css/main.ce1447e5.css",
-    "main.js": "/META/static/js/main.26155b54.js",
-    "index.html": "/META/index.html",
-    "main.ce1447e5.css.map": "/META/static/css/main.ce1447e5.css.map",
-    "main.26155b54.js.map": "/META/static/js/main.26155b54.js.map"
+    "main.css": "/StockTrackerMain/static/css/main.ce1447e5.css",
+    "main.js": "/StockTrackerMain/static/js/main.26155b54.js",
+    "index.html": "/StockTrackerMain/index.html",
+    "main.ce1447e5.css.map": "/StockTrackerMain/static/css/main.ce1447e5.css.map",
+    "main.26155b54.js.map": "/StockTrackerMain/static/js/main.26155b54.js.map"
   },
   "entrypoints": [
     "static/css/main.ce1447e5.css",
