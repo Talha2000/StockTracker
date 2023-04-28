@@ -18,8 +18,9 @@ const DashBoard = () => {
   const [stockDetails, setStockDetails] = useState({});
   const [news, setNews] = useState([]);
   const navigate = useNavigate();
-
+  
   const { stockName } = useParams();
+  console.log(stockName);
   const [ symbol, setSymbol ] = useState();
 
   const formatDate = () => {
@@ -46,7 +47,7 @@ const DashBoard = () => {
   //If there is any change in the stockSymbol, this hook is called
   useEffect(() => { 
     if (currentUser == null) {
-      navigate('/login')
+      navigate('StockTrackerMain/login')
     }
     const getSymbol = async () => {
       setSymbol(await checkParam());
