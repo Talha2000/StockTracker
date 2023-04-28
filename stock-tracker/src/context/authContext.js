@@ -4,9 +4,8 @@ import axios from "axios";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({children}) => {
-    const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user') || null));
-    // const [userId, setUserId] = useState(JSON.parse(localStorage.getItem("id") || null));
-
+  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user') || null));
+  console.log(currentUser);
     const getAuthToken = () => {
         if (currentUser) {
           return {
@@ -15,7 +14,7 @@ export const AuthContextProvider = ({children}) => {
             },
           };
         }
-        return {};
+        return {}
     };
 
     const login = async(inputs) => {

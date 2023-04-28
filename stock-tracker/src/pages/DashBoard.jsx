@@ -13,12 +13,11 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
 
 const DashBoard = () => {
-  const {stockSymbol, setStockSymbol, companyDetails, setQuote, quote, stockQuote, companyNews, getStocks, stockList} = useContext(StockContext);
-  const {currentUser} = useContext(AuthContext);
+  const {stockSymbol, companyDetails, setQuote, quote, stockQuote, companyNews, getStocks, stockList} = useContext(StockContext);
+  const {currentUser, getAuthToken} = useContext(AuthContext);
   const [stockDetails, setStockDetails] = useState({});
   const [news, setNews] = useState([]);
   const navigate = useNavigate();
-
 
   const { stockName } = useParams();
   const [ symbol, setSymbol ] = useState();
@@ -35,13 +34,10 @@ const DashBoard = () => {
 
   const checkParam = () => {
     if (stockName !== undefined) {
-      // setSymbol(stockName)
       console.log("This is the stockName in IF: " + stockName)
-      // console.log("this is the IF: " + symbol)
       return stockName
     }
     else {
-      // setSymbol(stockSymbol)
       console.log("This is the ELSE: " + stockSymbol)
       return "META"
     }
@@ -49,7 +45,9 @@ const DashBoard = () => {
 
   //If there is any change in the stockSymbol, this hook is called
   useEffect(() => { 
-
+    if (currentUser == null) {
+      navigate('/login')
+    }
     const getSymbol = async () => {
       setSymbol(await checkParam());
       console.log("this is the symbol after check Param: " + symbol);
@@ -98,8 +96,6 @@ const DashBoard = () => {
     }, 5 * 60 * 1000);
     return () => clearInterval(interval); // clean up the interval
   }, [currentUser, stockName, navigate]); // stockSymbol is the dependency for the useEffect
-
-  // console.log("called dashboard: " + symbol)
 
   const variants = {
     hidden: { opacity: 0, y : 0},
