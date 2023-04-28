@@ -29,18 +29,18 @@ export const NavBar = () => {
             {/* <Link className='link' to="/">
               Home
             </Link> */}
-          <Link className='link' to="StockTrackerMain/META" onClick={defaultPage}>
+          <Link className='link' to="/StockTrackerMain/META" onClick={defaultPage}>
               Dashboard
           </Link>
 
-          <Link className='link' to="StockTrackerMain/Portfolio">
+          <Link className='link' to="/StockTrackerMain/Portfolio">
               Portfolio
           </Link>
 
           {currentUser ? (
-            <Link className='link' to="StockTrackerMain/login" onClick={logout}>Logout</Link>
+            <Link className='link' to="/StockTrackerMain/login" onClick={logout}>Logout</Link>
             ) : (
-            <Link className='link' to="StockTrackerMain/login">Login</Link>
+            <Link className='link' to="/StockTrackerMain/login">Login</Link>
             )}
 
           
