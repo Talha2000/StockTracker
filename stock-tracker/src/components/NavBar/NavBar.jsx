@@ -18,7 +18,7 @@ export const NavBar = () => {
   const navigate = useNavigate();
 
   const defaultPage = () => {
-    navigate(`/StockTrackerMain/:stockName`)  
+    navigate(`/:stockName`)  
   }
 
   const [activeNav, setActiveNav] = useState('/META');
@@ -29,18 +29,18 @@ export const NavBar = () => {
             {/* <Link className='link' to="/">
               Home
             </Link> */}
-          <Link className='link' to="/StockTrackerMain/META" onClick={defaultPage}>
+          <Link className='link' to="/META" onClick={defaultPage}>
               Dashboard
           </Link>
 
-          <Link className='link' to="/StockTrackerMain/Portfolio">
+          <Link className='link' to="/Portfolio">
               Portfolio
           </Link>
 
           {currentUser ? (
-            <Link className='link' to="/StockTrackerMain/login" onClick={logout}>Logout</Link>
+            <Link className='link' to="/login" onClick={logout}>Logout</Link>
             ) : (
-            <Link className='link' to="/StockTrackerMain/login">Login</Link>
+            <Link className='link' to="/login">Login</Link>
             )}
 
           
