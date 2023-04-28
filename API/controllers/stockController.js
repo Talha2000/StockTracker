@@ -7,9 +7,10 @@ const basePath = "https://finnhub.io/api/v1";
 
 const saveStock = (req, res)=>{
     // check if user exists in the users table
-    const user_id = req.user.id; // can also grab it from req.body.userId if we send the userId down
+    const { id, username } = req.user.id;
+    // can also grab it from req.body.userId if we send the userId down
     const q = "SELECT * FROM users WHERE id = ?";
-    db.query(q, [user_id], (err, results) => {
+    db.query(q, [id], (err, results) => {
       if (err) {
         console.log(err);
         return res.status(500).json({ message: "Server error" });
