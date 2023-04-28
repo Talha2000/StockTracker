@@ -7,7 +7,9 @@ theme: {
         white: "white",
         none: "none",
         mainBg: "#030712",
-        mainText: "#06b6d4"
+        mainText: "#06b6d4",
+        hoverText: "white",
+        hoverButton: "#1f1f38"
       },
       fontFamily: {
         quicksand: ["Quicksand", "sans-serif"],

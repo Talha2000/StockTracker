@@ -43,25 +43,18 @@ const login = (req, res)=>{
         // Check password
         // Load hash from your password DB.
         const validatePassword = bcrypt.compareSync(req.body.password, data[0].password);
-        
+
         if (!validatePassword) return res.status(400).json("Wrong username or password!")
         
-        
         // const {password, ...other} = data[0];
-        const {id} = data[0];
-        const user = { id: id, user: req.body.username}
-        const token = jwt.sign(user, process.env.ACCESS_TOKEN);
-        console.log("This is the user object I want to sign " + user.id)
+        // const {id} = data[0];
+        const user = { id: data[0], user: req.body.username}
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '2h' });
         res.json(token)
-        // res
-        // .cookie("access_token", token, {
-        //     httpOnly: true,
-        //     path: "/",
-        // }).status(200).json(other);
     });
 };
 
-const logout = (req, res)=>{
+const logout = (req, res) => {
     res.clearCookie("access_token", {
         sameSite: "none",
         secure: true

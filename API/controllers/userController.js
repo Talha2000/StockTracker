@@ -8,7 +8,8 @@
 // @route  GET /api/users/me
 // @access Private
 const getMe = (req, res) => {
-    res.status(200).json(req.user)
+    const { id, username } = req.user.id;
+    res.status(200).json({id, username})
 }
 
 module.exports = {

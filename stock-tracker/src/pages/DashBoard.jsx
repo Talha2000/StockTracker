@@ -44,6 +44,7 @@ const DashBoard = () => {
 
   //If there is any change in the stockSymbol, this hook is called
   useEffect(() => { 
+    console.log(currentUser)
     if (currentUser == null) {
       navigate('/login')
     }
@@ -112,7 +113,7 @@ const DashBoard = () => {
         <Search/>
       </motion.div>
 
-      <motion.div className="mt-5" style={{ zIndex: '0' }}
+      <motion.div className="mt-5 w-full h-full" style={{ zIndex: '0' }}
                   variants={variants}
                   initial='hidden'
                   animate={{opacity: 1, transition: { duration: 2 }}}
