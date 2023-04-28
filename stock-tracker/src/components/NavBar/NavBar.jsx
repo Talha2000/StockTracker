@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import { Link } from 'react-router-dom'
 // import "../../styles.scss"
 import "./navbar.scss"
-import { AuthContext, logout } from '../../context/authContext'
+import { AuthContext } from '../../context/authContext'
 import { useNavigate } from 'react-router-dom'
 
 // import {AiOutlineHome} from 'react-icons/ai'
@@ -18,7 +18,7 @@ export const NavBar = () => {
   const navigate = useNavigate();
 
   const defaultPage = () => {
-    navigate(`/:META`)  
+    navigate(`/StockTrackerMain/:stockName`)  
   }
 
   const [activeNav, setActiveNav] = useState('/META');
