@@ -8,7 +8,6 @@ import Chart from '../components/Chart/Chart'
 import Search from '../components/Search/Search'
 import Options from '../components/Options/Options'
 import CompanyNews from '../components/News/CompanyNews'
-import { chartConfig } from '../constants/config'
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
 
@@ -20,7 +19,6 @@ const DashBoard = () => {
   const navigate = useNavigate();
   
   const { stockName } = useParams();
-  console.log(stockName);
   const [ symbol, setSymbol ] = useState();
 
   const formatDate = () => {
@@ -47,7 +45,7 @@ const DashBoard = () => {
   //If there is any change in the stockSymbol, this hook is called
   useEffect(() => { 
     if (currentUser == null) {
-      navigate('StockTrackerMain/login')
+      navigate('/login')
     }
     const getSymbol = async () => {
       setSymbol(await checkParam());
