@@ -2,7 +2,7 @@
   "name": "stock-tracker",
   "version": "0.1.0",
   "proxy": "https://stocktrackerapi.onrender.com/api",
-  "homepage": "https://talha2000.github.io/StockTrackerMain",
+  "homepage": "https://talha2000.github.io/StockTrackerMain/META",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^1.0.6",
