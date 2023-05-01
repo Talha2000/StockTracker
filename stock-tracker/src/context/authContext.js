@@ -12,7 +12,7 @@ export const AuthContextProvider = ({children}) => {
   const getAuthToken = async () => {
     if (!currentUser) {
       console.log("This is !currentUser")
-      navigate('/login');
+      // navigate('/login');
     }
     const headers = {
       Authorization: `Bearer ${currentUser}`,
@@ -25,10 +25,10 @@ export const AuthContextProvider = ({children}) => {
       // if the response is successful, meaning the auth token is valid return the headers
       return {headers};
     } catch (error) {
-      if (error.response.status === 401) {
-        console.log("error 401 here")
-        navigate('/login');
-      }
+      // if (error.response.status === 401) {
+      //   console.log("error 401 here")
+      //   navigate('/login');
+      // }
       throw error; // re-throw any other errors
     }
   };

@@ -2,8 +2,11 @@ import React, { useContext } from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/authContext'
+import { ThemeContext } from '../context/themeContext'
 
 const Login = () => {
+  const { darkMode } = useContext(ThemeContext);
+
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -36,7 +39,8 @@ const Login = () => {
 
   return (
     
-    <div className="w-screen flex flex-col items-center justify-center bg-gray-900 px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <div className={`w-full h-screen flex flex-col items-center justify-center px-6 py-8 mx-auto  lg:py-0 
+                    ${darkMode ? "bg-gray-900 ease-in duration-200" : "bg-neutral-100 ease-in duration-200"}`}>
       <div className="p-20 bg-gray-800 border-gray-900 rounded-lg shadow">
         <form className="flex flex-col align-center justify-items-center">
           <h1 className="pb-8 text-3xl text font-bold text-white">Sign in to your account</h1>

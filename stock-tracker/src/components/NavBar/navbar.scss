@@ -31,7 +31,7 @@ $color-dark: #000000;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
-        gap: 0.8rem;
+        // gap: 0.8rem;
         border-radius: 1.5rem;
         transition: all 0.3s ease-out; /* add a transition to all properties */
         backdrop-filter: blur(15px);
@@ -41,7 +41,6 @@ $color-dark: #000000;
         .links{
             display: flex;
             align-items: center;
-            gap: 30px;
             // background-color: white;
 
             .link {

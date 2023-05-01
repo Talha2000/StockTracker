@@ -9,12 +9,12 @@ import { AuthContext } from '../../context/authContext';
 
 import {EyeIcon, EyeOffIcon} from '@heroicons/react/solid'
 import { motion } from "framer-motion"
+import { useNavigate } from 'react-router-dom';
 
-
-const Options = ({data, user}) => {
-    const {stockSymbol, saveStock, stockList, getStocks} = useContext(StockContext);
+const Options = ({data, stock}) => {
+    const {saveStock, removeStock, stockList} = useContext(StockContext);
     const [option, setOption] = useState();
-
+    const navigate = useNavigate();
     useEffect(() => {
         try {
             if (data.length === 0) {
@@ -23,7 +23,7 @@ const Options = ({data, user}) => {
                 // We get the data in form of an array of objects like [{}, {}, {}, ..., {}]
                 // We go through the entire array. Each object is defined as "item" and from the item we get the stockName
                 const listStocks = data.map((item) => item.stockName);
-                if (listStocks.includes((stockSymbol))) {
+                if (listStocks.includes((stock))) {
                     setOption(true);
                 } else {
                     setOption(false);
@@ -32,18 +32,18 @@ const Options = ({data, user}) => {
         } catch (error) {
             console.log(error)
         };
-    }, [stockList, user]);
+    }, [stockList, navigate]);
 
         
     const bookMark = async () => {
         console.log("bookmark called");
-        await(saveStock(stockSymbol));
+        await(saveStock(stock));
         setOption(true);
     }
 
     const removeBookMark = async () => {
         console.log("removeBookMark called");
-        await(saveStock(stockSymbol));
+        await(removeStock(stock));
         setOption(false);
     }
 

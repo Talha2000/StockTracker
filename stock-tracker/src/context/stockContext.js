@@ -9,11 +9,10 @@ const basePath = "https://finnhub.io/api/v1";
 const api_key = "cgk8knpr01qq3c3u2ma0cgk8knpr01qq3c3u2mag"
 
 export const StockContextProvider = ({children}) => {
-    const [stockSymbol, setStockSymbol] = useState("META");
+    const [stockSymbol, setStockSymbol] = useState();
     const {getAuthToken} = useContext(AuthContext);
     const [quote, setQuote] = useState({});
     const [stockList, setStockList ] = useState([]);
-
     // Stock lookup
     const searchSymbol = async (query) => {
         const url = `${basePath}/search?q=${query}&token=${api_key}`;
@@ -81,11 +80,26 @@ export const StockContextProvider = ({children}) => {
         }
     }
 
+    // removeBookMark
+    const removeStock = async (symbol) => {
+      const authToken = await getAuthToken();
+        const res = await axios.post("/api/stock/removeStock", {symbol}, authToken);
+        if (res.status >= 200 && res.status < 300) {
+          console.log('Successfully removed bookmark: ' + symbol);
+        }
+        else {
+          console.log('Failed to remove bookmark');
+        }
+    }
+
+
+
     // get user stocks from database
     const getStocks = async () => {
       const authToken = await getAuthToken();
       const res = await axios.get("/api/stock/getStocks", authToken)
       if (res.status == 200) {
+        console.log(res.data);
         setStockList(res.data);
       } 
       else if (res.status == 401) {
@@ -100,7 +114,7 @@ export const StockContextProvider = ({children}) => {
     return (
         // <StockContext.Provider value={{ searchSymbol, stockSymbol, setStockSymbol }}>
         <StockContext.Provider value={{
-          searchSymbol, companyDetails, stockQuote, stockCandles, companyNews, saveStock, 
+          searchSymbol, companyDetails, stockQuote, stockCandles, companyNews, saveStock, removeStock,
           setStockSymbol, stockSymbol, setQuote, quote, getStocks, stockList}}>
             {children}
         </StockContext.Provider>
