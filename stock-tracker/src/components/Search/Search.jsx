@@ -55,7 +55,7 @@ const Search = () => {
     // }
 
   return (
-    <div className="flex items-center my-4 mt-20 border-2 rounded-md relative z-50 w-96 bg-white border-neutral-200">
+    <div className="flex items-center mt-20 border-2 rounded-md relative z-50 w-96 bg-white border-neutral-200">
         <input type="text" value={input} className='w-full px-4 py-2 focus:outline-none rounded-md text-black'
         placeholder='Search Stock...'
         onChange={(event) => setInput(event.target.value)} // changeInput

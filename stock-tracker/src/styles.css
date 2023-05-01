@@ -26,7 +26,6 @@
         rounded flex items-center justify-center rounded-md hover:bg-hoverButton font-bold
         cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 ;
     }
-
     /* .card-container { */
           /* width: 100%; use relative or percentage-based unit */
             /* height: auto; let the height be determined by the content */

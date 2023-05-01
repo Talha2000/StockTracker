@@ -1,7 +1,6 @@
 const db = require("../db")
 const finnhub = require('finnhub');
 const request = require('request');
-const asyncHandler = require('express-async-handler')
 const basePath = "https://finnhub.io/api/v1";
 const util = require('util');
 const query = util.promisify(db.query).bind(db);
@@ -34,8 +33,35 @@ const saveStock = async (req, res)=>{
       console.log(error);
       return res.status(500).json({ message: "Server error" });
     }
-
 }
+
+const removeStock = async (req, res)=>{
+  // check if user exists in the users table
+  // console.log("this is the symbol" + req.body.symbol)
+  try {
+    const { id } = req.user.id;
+    const q = "SELECT * FROM users WHERE id = ?";
+    const results = await query(q, [id]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const deleteQuery = "DELETE FROM userStocks WHERE id = ? AND stockName = ?";
+    const stockParams = [
+      id,
+      req.body.symbol,
+    ];
+
+    await query(deleteQuery, stockParams);
+
+    return res.status(200).json({ message: "Stock removed successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
 
 const getStocks = async(req, res) => {
     // get the current user logged in
@@ -52,6 +78,7 @@ const getStocks = async(req, res) => {
 
 module.exports = {
     saveStock,
+    removeStock,
     getStocks,
 }
 

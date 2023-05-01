@@ -1,7 +1,7 @@
 {
   "name": "stock-tracker",
   "version": "0.1.0",
-  "proxy": "https://stocktrackerapi.onrender.com",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^1.0.6",
