@@ -25,10 +25,12 @@ export const AuthContextProvider = ({children}) => {
       // if the response is successful, meaning the auth token is valid return the headers
       return {headers};
     } catch (error) {
-      // if (error.response.status === 401) {
-      //   console.log("error 401 here")
-      //   navigate('/login');
-      // }
+      if (error.response.status === 401) {
+        console.log("error 401 here")
+        if (window.location.pathname !== '/register') { // add this line to check if the current page is not already the register page
+          navigate('/login');
+        }
+      }
       throw error; // re-throw any other errors
     }
   };

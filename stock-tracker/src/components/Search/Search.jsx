@@ -3,10 +3,11 @@ import React, { useEffect, useState, useContext } from 'react'
 import { SearchIcon, XIcon} from "@heroicons/react/solid"
 import SearchResults from '../SearchResults/SearchResults';
 import { searchSymbol } from '../../helpers/finnhubApis';
-
+import { ThemeContext } from '../../context/themeContext';
 // import './searchStyle.scss';
 
 const Search = () => {
+    const {darkMode} = useContext(ThemeContext)
     const [input, setInput] = useState("");
     const [bestMatches, setBestMatches] = useState([]);
 
@@ -55,11 +56,15 @@ const Search = () => {
     // }
 
   return (
-    <div className="flex items-center mt-20 border-2 rounded-md relative z-50 w-96 bg-white border-neutral-200">
-        <input type="text" value={input} className='w-full px-4 py-2 focus:outline-none rounded-md text-black'
-        placeholder='Search Stock...'
-        onChange={(event) => setInput(event.target.value)} // changeInput
-        onKeyDown={(event) => { // keyPressed
+    <div className={`flex items-center mt-20 border-2 rounded-md relative z-50 w-96 bg-white 
+                    ${darkMode ? "border-neutral-200" : "border-black"}`}>
+        <input type="text" 
+          value={input} 
+          className="w-full px-4 py-2 focus:outline-none rounded-md text-black shadow-xl"
+          placeholder='Search Stock...'
+          onChange={(event) => setInput(event.target.value)} // changeInput
+          onKeyDown={(event) => { // keyPressed
+          
           if (event.key === "Enter") {
             updateBestMatches();
           }

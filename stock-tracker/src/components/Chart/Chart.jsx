@@ -12,14 +12,18 @@ import Filters from './Filters';
 import { chartConfig } from '../../constants/config';
 import { convertUnixTimeStampToDate, convertDateToUnixTimeStamp, createDate } from '../../helpers/helper';
 import { getHistoricalData } from '../../helpers/finnhubApis';
-import { StockContext } from '../../context/stockContext';
+// import { StockContext } from '../../context/stockContext';
+import { ThemeContext } from '../../context/themeContext';
+import { useNavigate } from 'react-router-dom';
 
-const Chart = () => {
+const Chart = ({symbol}) => {
     const [data, setChartData] = useState([]);
     const [filter, setFilter ] = useState("1W");
 
-    const {stockSymbol} = useContext(StockContext)
+    // const {stockSymbol} = useContext(StockContext);
 
+    const {darkMode} = useContext(ThemeContext);
+    const navigate = useNavigate();
     const formatData = (data) => {
         console.log(data);
         return data.c.map((item, index) => {
@@ -48,8 +52,8 @@ const Chart = () => {
             try{
                 const {startTimeUnix, endDateUnix } = getDateInterval();
                 const resolution = chartConfig[filter].resolution;
-
-                const response = await getHistoricalData(stockSymbol, resolution, startTimeUnix, endDateUnix);
+                console.log("this is the stockSymbol in chart" + symbol)
+                const response = await getHistoricalData(symbol, resolution, startTimeUnix, endDateUnix);
                 setChartData(formatData(response));
                 console.log(response);
             }
@@ -60,7 +64,7 @@ const Chart = () => {
         };
 
         updateChart();
-    }, [stockSymbol, filter]);
+    }, [symbol, filter, navigate]);
 
   return (
     <Card>
@@ -82,14 +86,16 @@ const Chart = () => {
             <AreaChart data={data}>
                 <defs>
                     <linearGradient id="chartColor" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="white" stopOpacity={0.9}/>
-                    <stop offset="95%" stopColor="cyan" stopOpacity={0.2}/>
+                    <stop offset="5%" stopColor={darkMode ? "white" : "black"} stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor={darkMode ? "cyan" : "black"} stopOpacity={0.2}/>
                     </linearGradient>
                 </defs>
                 <Tooltip
                     // contentStyle={{ backgroundColor: "#111827" }}
                     // itemStyle={{ color: "#818cf8" }}
-                    contentStyle={{ backgroundColor: "#111827" }}
+                    // contentStyle={{backgroundColor: "#111827" }}
+                    // itemStyle={{ color: "#818cf8" }}
+                    contentStyle={{ backgroundColor: darkMode ? "#1f2937" : "#f9fafb" }}
                     itemStyle={{ color: "#818cf8" }}
                 />
                 <Area 
