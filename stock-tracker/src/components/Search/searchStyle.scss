@@ -1,57 +1,57 @@
-.searchBar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5px 0px 5px 0px;
-    border-radius: 10px;
-    position: relative;
-    z-index: 50;
-    width: 100%;
-    background: white;
-    border: 1px solid black;
+// .searchBar {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     margin: 5px 0px 5px 0px;
+//     border-radius: 10px;
+//     position: relative;
+//     z-index: 50;
+//     width: 100%;
+//     background: white;
+//     border: 1px solid black;
 
-    .searchInput {
-        width: auto;
-        padding: 5px 10px 5px 10px;
-        border-radius: 50px;
-        border: none;
+//     .searchInput {
+//         width: auto;
+//         padding: 5px 10px 5px 10px;
+//         border-radius: 50px;
+//         border: none;
         
-        &:focus {
-            outline: none;
-        }
-    }
+//         &:focus {
+//             outline: none;
+//         }
+//     }
 
-    .xBtn {
-        height: 20px;
-        width: 20px;
-        // background-color: indigo;
-        // background-color: white;
-        border: none;
-    }
+//     .xBtn {
+//         height: 20px;
+//         width: 20px;
+//         // background-color: indigo;
+//         // background-color: white;
+//         border: none;
+//     }
 
-    .xIcon {
-        height: 10px;
-        width: 10px;
-        fill: black;
-    }
+//     .xIcon {
+//         height: 10px;
+//         width: 10px;
+//         fill: black;
+//     }
 
-    .searchBtn{
-        height: 20px;
-        width: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 10px;
-        padding: 4px;
-        border: none;
-        border-radius: 4px;
-        background-color: indigo;
+//     .searchBtn{
+//         height: 20px;
+//         width: 20px;
+//         display: flex;
+//         justify-content: center;
+//         align-items: center;
+//         margin: 10px;
+//         padding: 4px;
+//         border: none;
+//         border-radius: 4px;
+//         background-color: indigo;
 
-    }
+//     }
 
-    .searchIcon {
-        fill: white;
-    }
+//     .searchIcon {
+//         fill: white;
+//     }
 
-}
+// }
 

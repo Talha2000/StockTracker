@@ -10,11 +10,14 @@ import { AuthContext } from '../../context/authContext';
 import {EyeIcon, EyeOffIcon} from '@heroicons/react/solid'
 import { motion } from "framer-motion"
 import { useNavigate } from 'react-router-dom';
-
+import { ThemeContext } from '../../context/themeContext';
 const Options = ({data, stock}) => {
     const {saveStock, removeStock, stockList} = useContext(StockContext);
     const [option, setOption] = useState();
+    const {darkMode} = useContext(ThemeContext);
+
     const navigate = useNavigate();
+
     useEffect(() => {
         try {
             if (data.length === 0) {
@@ -60,7 +63,7 @@ const Options = ({data, stock}) => {
                 {
                     option ? (
                         <motion.button 
-                                className='btn-options'
+                                className={darkMode ? "btn-options" : "btn-optionsLight"}
                                 type="button" onClick={removeBookMark}
                                 variants={variants}
                                 initial='hidden'
@@ -70,7 +73,8 @@ const Options = ({data, stock}) => {
                         </motion.button>)
                     :
                     (
-                        <motion.button className='btn-options'
+                        <motion.button 
+                                className={darkMode ? "btn-options" : "btn-optionsLight"}
                                 type="button" onClick={bookMark}
                                 variants={variants}
                                 initial='hidden'
@@ -81,20 +85,22 @@ const Options = ({data, stock}) => {
                     )
                 }
                 
-                    <motion.button className='btn-options' 
+                    <motion.button 
+                            className={darkMode ? "btn-options" : "btn-optionsLight"}
                             type="button"
                             variants={variants}
                             initial='hidden'
                             animate='visible'> 
-                        Buy 
+                        BUY 
                     </motion.button>
 
-                    <motion.button className='btn-options' 
+                    <motion.button 
+                            className={darkMode ? "btn-options" : "btn-optionsLight"} 
                             type="button"
                             variants={variants}
                             initial='hidden'
                             animate='visible'>
-                        Sell 
+                        SELL 
                     </motion.button>
                 </li>
             </ul>

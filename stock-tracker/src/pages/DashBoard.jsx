@@ -10,10 +10,13 @@ import Options from '../components/Options/Options'
 import CompanyNews from '../components/News/CompanyNews'
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
+import { ThemeContext } from '../context/themeContext'
 
 const DashBoard = () => {
   const {setStockSymbol, companyDetails, setQuote, quote, stockQuote, companyNews, stockList} = useContext(StockContext);
   const {currentUser, getAuthToken} = useContext(AuthContext);
+  const { darkMode } = useContext(ThemeContext);
+
   const [stockDetails, setStockDetails] = useState({});
   const [news, setNews] = useState([]);
   const navigate = useNavigate();
@@ -80,8 +83,10 @@ const DashBoard = () => {
   return (
     // <motion.div className='text-white pb-20 pt-10 h-screen w-screen grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-rows-8 md:grid-rows-7 xl:grid-rows-5 auto-rows-fr gap-6 p-10 font-quicksand bg-mainBg'>
     // <motion.div className='text-white pb-20 pt-10 h-screen w-screen grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-rows-8 md:grid-rows-7 xl:grid-rows-5 auto-rows-fr gap-6 p-10 font-quicksand bg-mainBg'>
-    <motion.div className='text-white h-full w-screen grid grid-cols-1 md:h-screen md:grid-cols-2 xl:grid-cols-3 grid-rows-8 md:grid-rows-7 xl:grid-rows-5 auto-rows-fr gap-6 p-8 font-quicksand bg-mainBg'>
-      
+    <motion.div className={`h-full w-full grid grid-cols-1 md:h-screen md:grid-cols-2 xl:grid-cols-3 grid-rows-8 
+                          md:grid-rows-7 xl:grid-rows-5 auto-rows-fr gap-6 p-8 font-quicksand
+                          ${darkMode ? "text-white bg-mainBg ease-in duration-200" : "text-black bg-neutral-200 ease-in duration-200" }`}>
+                            
       <motion.div className="col-span-1 row-span-1 md:row-span-1 md:col-span-2 xl:col-span-3 flex justify-start items-center" style={{ zIndex: '1' }}
                   variants={variants}
                   initial='hidden'
@@ -110,7 +115,7 @@ const DashBoard = () => {
                   initial='hidden'
                   animate={{opacity: 1, transition: { delay: 2}}}
                 >
-        <Chart/>
+        <Chart symbol={stockName}/>
       </motion.div>
 
       <motion.div className="row-span-2 xl:row-span-3"

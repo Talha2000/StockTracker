@@ -24,8 +24,14 @@
     .btn-options {
         @apply w-28 m-2 h-12 border-1 
         rounded flex items-center justify-center rounded-md hover:bg-hoverButton font-bold
-        cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 ;
+        cursor-pointer bg-cyan-500 border-cyan-400 text-neutral-200 shadow-2xl;
     }
+
+    .btn-optionsLight {
+      @apply w-28 m-2 h-12 border-1 
+      rounded flex items-center justify-center rounded-md hover:bg-neutral-300 hover:text-neutral-500 font-bold
+      cursor-pointer bg-black border-white text-neutral-200 shadow-2xl;
+  }
     /* .card-container { */
           /* width: 100%; use relative or percentage-based unit */
             /* height: auto; let the height be determined by the content */
@@ -34,6 +40,8 @@
             /* border: 0.125rem solid #38B2AC; use same color as border-cyan-600 */
     /* } */
 }
+
+
 
 /* body {
   margin: 0;
