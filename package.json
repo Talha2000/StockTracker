@@ -3,6 +3,7 @@
     "bcryptjs": "^2.4.3",
     "concurrently": "^8.0.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.0",
     "react-router-dom": "^6.10.0"
   },
