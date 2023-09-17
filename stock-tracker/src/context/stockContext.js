@@ -71,13 +71,14 @@ export const StockContextProvider = ({children}) => {
     // BookMark the stock
     const saveStock = async (symbol) => {
       const authToken = await getAuthToken();
-        const res = await axios.post("/api/stock/saveStock", {symbol}, authToken);
-        if (res.status >= 200 && res.status < 300) {
-          console.log('Successfully bookmarked: ' + symbol);
-        }
-        else {
-          console.log('failed to bookmark, most likely stock is already bookmarked');
-        }
+      const res = await axios.post("/api/stock/saveStock", {symbol}, authToken);
+      console.log("this was a success");
+      if (res.status >= 200 && res.status < 300) {
+        console.log('Successfully bookmarked: ' + symbol);
+      }
+      else {
+        console.log('failed to bookmark, most likely stock is already bookmarked');
+      }
     }
 
     // removeBookMark
@@ -97,6 +98,7 @@ export const StockContextProvider = ({children}) => {
     // get user stocks from database
     const getStocks = async () => {
       const authToken = await getAuthToken();
+      console.log("getStocks was called");
       const res = await axios.get("/api/stock/getStocks", authToken)
       if (res.status == 200) {
         console.log(res.data);

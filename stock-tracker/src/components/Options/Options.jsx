@@ -7,7 +7,7 @@ import { BookmarkIcon } from '@heroicons/react/solid';
 import { StockContext } from '../../context/stockContext';
 import { AuthContext } from '../../context/authContext';
 
-import {EyeIcon, EyeOffIcon} from '@heroicons/react/solid'
+import { EyeIcon, EyeOffIcon} from '@heroicons/react/solid'
 import { motion } from "framer-motion"
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../../context/themeContext';
@@ -25,7 +25,8 @@ const Options = ({data, stock}) => {
             } else {
                 // We get the data in form of an array of objects like [{}, {}, {}, ..., {}]
                 // We go through the entire array. Each object is defined as "item" and from the item we get the stockName
-                const listStocks = data.map((item) => item.stockName);
+                const listStocks = data.map((item) => item.stockSymbol);
+                console.log(listStocks);
                 if (listStocks.includes((stock))) {
                     setOption(true);
                 } else {
