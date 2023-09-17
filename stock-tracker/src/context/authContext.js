@@ -32,7 +32,7 @@ export const AuthContextProvider = ({children}) => {
       console.log({headers});
       // get the user profile with the token generated when they had logged in
       // const res = await axios.get('/api/users/me', {headers});
-      const res = await axios.get("https://stocktrackerapi.onrender.com/api/users/me", {headers});
+      const res = await axios.get("https://stocktrackerAPI.onrender.com/api/users/me", {headers});
       // if the response is successful, meaning the auth token is valid return the headers
       return {headers};
     } catch (error) {
@@ -48,13 +48,13 @@ export const AuthContextProvider = ({children}) => {
 
     const login = async(inputs) => {
         // const res = await axios.post("/api/auth/login", inputs);
-        const res = await axios.post("https://stocktrackerapi.onrender.com/api/auth/login", inputs);
+        const res = await axios.post("https://stocktrackerAPI.onrender.com/api/auth/login", inputs);
         setCurrentUser(res.data);
         sessionStorage.setItem('user', JSON.stringify(res.data));
     }
 
     const logout = async(inputs) => {
-      await axios.post("https://stocktrackerapi.onrender.com/api/auth/logout");
+      await axios.post("https://stocktrackerAPI.onrender.com/api/auth/logout");
 
         await axios.post("/api/auth/logout");
         setCurrentUser(null);
