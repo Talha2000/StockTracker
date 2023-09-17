@@ -4,15 +4,12 @@ const jwt = require('jsonwebtoken');
 const protect = (req, res, next) => {
     // with the current http request sent to the API
     const token = req.headers.authorization?.split(' ')[1] || null;
-
-    // const token = req.headers.authorization?.split(' ')[1]; // Get the token from the authorization header
-    // if we have an authheader, then return the split. Otherwise null
-    // const token = authHeader && authHeader.split(' ')[1]
     if (token == null) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-  
+    console.log("this is the token in authMiddleware: ", token);
     try {
+      console.log("this is the acess token in authMiddleware: ", process.env.ACCESS_TOKEN);
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
       req.user = decoded;
       next();
@@ -22,7 +19,6 @@ const protect = (req, res, next) => {
     }
   };
 
-
 module.exports = {
-    protect,
+    protect
 }

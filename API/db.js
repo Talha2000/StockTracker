@@ -1,21 +1,17 @@
-require('dotenv').config()
-const sql = require('mysql2');
+const mongoose = require('mongoose');
 
-var db = sql.createConnection({
-    host:process.env.DB_HOST,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.DB_DATABASE,
-  });
-
-
-  db.connect((err) => {
-    if (err) {
-      console.error('Error connecting to the database:', err);
-      return;
+const ATLAS_URI = "mongodb+srv://amjadt1:dev@stocktracker.gnacsq5.mongodb.net/?retryWrites=true&w=majority";
+const connectDB = async () => {
+    try {
+        await mongoose.connect(ATLAS_URI, {
+            useUnifiedTopology: true,
+            useNewUrlParser: true,
+            dbName: 'StockData', // Specify the database name here
+        });
+        console.log('MongoDB connected');
+    } catch (err) {
+        console.error(err);
     }
-  
-    console.log('Connected to the database successfully!');
-  });
+}
 
-module.exports = db;
+module.exports = connectDB

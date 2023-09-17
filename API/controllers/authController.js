@@ -1,57 +1,95 @@
-const db = require("../db")
+const connectDB = require('../db'); // Import the MongoDB client and database instance
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const User = require('../models/users'); // Import your User model
 
-// const sql = require('mssql')  
+// change the following API calls to work with mongoDB cluster
 
-const register = (req, res)=>{
-    // check existing user
-    const q = "SELECT * FROM users where email = ? OR username = ?";
+const checkUserExists = async (email, username) => {
+    try {
+        // Make sure the client is connected
+        if (!connectDB) {
+          await connectDB.connect();
+          console.log("Connected to MongoDB in checkUserExists");
+        }
+        const user = await User.findOne({
+            $or: [
+              { email: email },
+              { username: username }
+            ]
+          });
+        return user !== null;
+      } catch (error) {
+        console.error("Error in checkUserExists:", error);
+        throw error;
+      }
+};
 
-    console.log(req.body)
-    db.query(q, [req.body.email, req.body.username], (err, data)=>{
-        if (err) return res.json(err)
+const createUser = async (username, email, password) => {
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+    const newUser = new User({
+      username: username,
+      email: email,
+      password: hash
+    });  
+    await newUser.save();
+    console.log("User saved successfully");
 
-        if (data.length) return res.status(409).json("User already exists!");
+};
 
-        //Hash the password and create user
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(req.body.password, salt);
+const register = async (req, res) => {
+    const { email, username, password } = req.body;
+  
+    try {
+      const userExists = await checkUserExists(email, username);
+      if (userExists) {
+        return res.status(409).json("User already exists!");
+      }
+  
+      await createUser(username, email, password);
+      return res.status(200).json("User has been created!");
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json("An error occurred.", err);
+    }
+};
 
-        const q = "INSERT INTO users(username, email, password)" + 
-                  "VALUES(?)"
-        const values = [
-            req.body.username,
-            req.body.email,
-            hash,
-        ]
+const login = async (req, res) => {
+    try {
+        // Make sure the client is connected
+        if (!connectDB) {
+            await connectDB.connect();
+            console.log("Connected to MongoDB in checkUserExists");
+          }
 
-        db.query(q, [values], (err,data)=> {
-            if (err) return res.json(err)
-            return res.status(200).json("User has been created!");
-        });
-    });
-}
+      // Check if the user exists by username
+      const user = await User.findOne({ username: req.body.username });
+  
+      if (!user) {
+        return res.status(404).json("User not found!");
+      }
+  
+      // Check password
+      const validatePassword = await bcrypt.compare(req.body.password, user.password);
+  
+      if (!validatePassword) {
+        return res.status(400).json("Wrong username or password!");
+      }
+  
+      // Generate a JWT token
+      console.log("this is the access_token in authController", process.env.ACCESS_TOKEN);
+      const token = jwt.sign({ id: user._id, username: user.username }, process.env.ACCESS_TOKEN, {
+        expiresIn: '2h',
+      });
 
-const login = (req, res)=>{
-    // check if user exists
-    const q = "SELECT * FROM users where username = ?";
-    db.query(q, [req.body.username], (err, data)=> {
-        if (err) return res.json(err);
-        if (data.length === 0) return res.status(404).json("User not found!")
-        
-        // Check password
-        // Load hash from your password DB.
-        const validatePassword = bcrypt.compareSync(req.body.password, data[0].password);
-
-        if (!validatePassword) return res.status(400).json("Wrong username or password!")
-        
-        // const {password, ...other} = data[0];
-        // const {id} = data[0];
-        const user = { id: data[0], user: req.body.username}
-        const token = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '2h' });
-        res.json(token)
-    });
+      console.log(token);
+  
+      res.json({ token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("An error occurred.");
+    }
 };
 
 const logout = (req, res) => {
@@ -64,5 +102,5 @@ const logout = (req, res) => {
 module.exports = {
     register,
     login,
-    logout,
+    logout
 }
