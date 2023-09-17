@@ -55,9 +55,8 @@ export const AuthContextProvider = ({children}) => {
 
     const logout = async(inputs) => {
       await axios.post("https://stocktrackerapi.onrender.com/api/auth/logout");
-
-        await axios.post("/api/auth/logout");
-        setCurrentUser(null);
+      // await axios.post("/api/auth/logout");
+      setCurrentUser(null);
     }
 
     useEffect(() => {
