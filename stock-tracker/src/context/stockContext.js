@@ -71,7 +71,7 @@ export const StockContextProvider = ({children}) => {
     // BookMark the stock
     const saveStock = async (symbol) => {
       const authToken = await getAuthToken();
-      const res = await axios.post("/api/stock/saveStock", {symbol}, authToken);
+      const res = await axios.post("https://stocktrackerapi.onrender.com/api/stock/saveStock", {symbol}, authToken);
       console.log("this was a success");
       if (res.status >= 200 && res.status < 300) {
         console.log('Successfully bookmarked: ' + symbol);
@@ -84,7 +84,7 @@ export const StockContextProvider = ({children}) => {
     // removeBookMark
     const removeStock = async (symbol) => {
       const authToken = await getAuthToken();
-        const res = await axios.post("/api/stock/removeStock", {symbol}, authToken);
+        const res = await axios.post("https://stocktrackerapi.onrender.com/api/stock/removeStock", {symbol}, authToken);
         if (res.status >= 200 && res.status < 300) {
           console.log('Successfully removed bookmark: ' + symbol);
         }
@@ -99,7 +99,7 @@ export const StockContextProvider = ({children}) => {
     const getStocks = async () => {
       const authToken = await getAuthToken();
       console.log("getStocks was called");
-      const res = await axios.get("/api/stock/getStocks", authToken)
+      const res = await axios.get("https://stocktrackerapi.onrender.com/api/stock/getStocks", authToken)
       if (res.status == 200) {
         console.log(res.data);
         setStockList(res.data);
