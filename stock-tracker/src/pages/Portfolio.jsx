@@ -21,11 +21,11 @@ const Portfolio = () => {
 
   useEffect(() => {
     const getStockPrices = async () => {
-      const symbols = stockList.map(stock => stock.stockName);
+      const symbols = stockList.map(stock => stock.stockSymbol);
 
       const stockPrices = await Promise.all(symbols.map(async (stock) => {
         const price = await stockQuote(stock);
-        console.log("this is hte price" + price);
+        console.log("this is the price" + price);
         return price.pc
       }));
       setStockPrices(stockPrices);
@@ -37,8 +37,8 @@ const Portfolio = () => {
   console.log(stockList);
 // make it so that the price is colored based on negative or postive percent gain...
 
-  const navigateStock = (stockName) => {
-    navigate(`/${stockName}`)
+  const navigateStock = (stockSymbol) => {
+    navigate(`/${stockSymbol}`)
   }
 
   return (
@@ -65,11 +65,11 @@ const Portfolio = () => {
                       
                       <td>
                         <button 
-                          onClick={() => navigateStock(item.stockName)}
+                          onClick={() => navigateStock(item.stockSymbol)}
                           className={`p-2 m-2 rounded-lg w-1/2  shadow-2xl
                                     ${darkMode ? "bg-neutral-300 text-black hover:bg-cyan-600 hover:text-white" 
                                       : "bg-black text-white hover:bg-neutral-400 hover:text-neutral-500"}`}>
-                          {item.stockName}
+                          {item.stockSymbol}
                         </button>
                       </td>
 
