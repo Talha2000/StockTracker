@@ -25,7 +25,6 @@ const Chart = ({symbol}) => {
     const {darkMode} = useContext(ThemeContext);
     const navigate = useNavigate();
     const formatData = (data) => {
-        console.log(data);
         return data.c.map((item, index) => {
             return {
                 value: item.toFixed(2),
@@ -52,10 +51,8 @@ const Chart = ({symbol}) => {
             try{
                 const {startTimeUnix, endDateUnix } = getDateInterval();
                 const resolution = chartConfig[filter].resolution;
-                console.log("this is the stockSymbol in chart" + symbol)
                 const response = await getHistoricalData(symbol, resolution, startTimeUnix, endDateUnix);
                 setChartData(formatData(response));
-                console.log(response);
             }
             catch (error) {
                 setChartData([]);

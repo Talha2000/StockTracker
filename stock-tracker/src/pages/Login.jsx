@@ -34,8 +34,6 @@ const Login = () => {
       setError(err.response.data)
     }
   }
-  console.log(inputs)
-
 
   return (
     

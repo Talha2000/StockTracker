@@ -5,8 +5,6 @@ import Options from '../Options/Options'
 
 const Overview = ({ symbol, price, change, changePercent, currency }) => {
   const {darkMode} = useContext(ThemeContext);
-  // console.log("this is the symbol in overview " + symbol)
-  // console.log(price)
   return (
     <Card>
         {/* <div className='pt-5 w-full h-full flex items-center justify-around'> */}
