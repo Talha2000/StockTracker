@@ -20,7 +20,6 @@ export const NavBar = () => {
       const getList = async () => {
         const val = await getStocks();
         setValue(val);
-        console.log(val);
       }
       getList();
   }, [navigate])

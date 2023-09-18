@@ -26,7 +26,6 @@ const Options = ({data, stock}) => {
                 // We get the data in form of an array of objects like [{}, {}, {}, ..., {}]
                 // We go through the entire array. Each object is defined as "item" and from the item we get the stockName
                 const listStocks = data.map((item) => item.stockSymbol);
-                console.log(listStocks);
                 if (listStocks.includes((stock))) {
                     setOption(true);
                 } else {
@@ -40,13 +39,11 @@ const Options = ({data, stock}) => {
 
         
     const bookMark = async () => {
-        console.log("bookmark called");
         await(saveStock(stock));
         setOption(true);
     }
 
     const removeBookMark = async () => {
-        console.log("removeBookMark called");
         await(removeStock(stock));
         setOption(false);
     }

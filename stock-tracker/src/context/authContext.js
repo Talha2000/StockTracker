@@ -11,7 +11,6 @@ export const AuthContextProvider = ({children}) => {
 
   const getAuthToken = async () => {
     if (!currentUser) {
-      console.log("This is !currentUser")
       // navigate('/login');
     }
 
@@ -28,8 +27,6 @@ export const AuthContextProvider = ({children}) => {
     }
 
     try {
-      console.log("WE are in the try statement")
-      console.log({headers});
       // get the user profile with the token generated when they had logged in
       // const res = await axios.get('/api/users/me', {headers});
       const res = await axios.get("https://stocktrackerapi.onrender.com/api/users/me", {headers});

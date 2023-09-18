@@ -51,22 +51,8 @@ const Register = () =>  {
       setError(err.response.data)
     }
   }
-  console.log(inputs)
 
   return (
-    // <div className="auth">
-    //   <h1>Register</h1>
-    //   <form>
-    //     <input required type="text" placeholder='username' name='username' onChange={handleChange}/>
-    //     <input required type="text" placeholder='email' name='email' onChange={handleChange}/>
-    //     <input required type="text" placeholder='password' name='password' onChange={handleChange}/>
-    //     <button onClick={handleSubmit}>Register</button>
-    //     {err && <p>{err}</p> } 
-    //     <span>Already have an account?
-    //     <Link to="/login">Login</Link>
-    //     </span>
-    //   </form>
-    // </div>
     <div className={`w-full h-screen flex flex-col items-center justify-center px-6 p-8 mx-auto  lg:py-0 
                     ${darkMode ? "bg-gray-900 ease-in duration-200" : "bg-neutral-100 ease-in duration-200"}`}>
     <div className={`p-20 w-1/2 rounded-lg shadow-2xl
