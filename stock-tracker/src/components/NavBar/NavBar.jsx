@@ -50,7 +50,7 @@ export const NavBar = () => {
                       ${darkMode ? "" : ""}`}>
           <li>
             <a href="#" className="block py-2 pl-3 pr-4 text-white  rounded md:bg-transparent md:p-0" aria-current="page">
-            <Link to={`/${stockList[0]?.stockSymbol}`}>
+            <Link to={`/${stockList[0]?.stockSymbol ?? 'META'}`}>
                DashBoard
             </Link>
             </a>
