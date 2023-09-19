@@ -78,13 +78,9 @@ const login = async (req, res) => {
       }
   
       // Generate a JWT token
-      console.log("this is the access_token in authController", process.env.ACCESS_TOKEN);
       const token = jwt.sign({ id: user._id, username: user.username }, process.env.ACCESS_TOKEN, {
         expiresIn: '2h',
-      });
-
-      console.log(token);
-  
+      });  
       res.json({ token });
     } catch (error) {
       console.error(error);
