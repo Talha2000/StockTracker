@@ -39,9 +39,9 @@ app.use('/api/stock', StockRoutes);
 const UserRoutes = require('./routes/users');
 app.use('/api/users', UserRoutes);
 
-// app.get("/", (req, res) => {
-//   res.json("hello this is the backend")
-// })
+app.get("/", (req, res) => {
+  res.json("hello this is the backend")
+})
 app.listen(process.env.PORT || 5001, ()=> {
     console.log(`Server running on port ${process.env.PORT}`);
 })

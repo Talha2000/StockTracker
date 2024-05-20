@@ -20,7 +20,7 @@
     "finnhub": "^1.2.17",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^6.1.0",
-    "mongoose": "^7.5.2",
+    "mongoose": "^7.6.11",
     "mssql": "^9.1.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.2.0",
