@@ -19,7 +19,6 @@ import { useNavigate } from 'react-router-dom';
 const Chart = ({symbol}) => {
     const [data, setChartData] = useState([]);
     const [filter, setFilter ] = useState("1W");
-
     // const {stockSymbol} = useContext(StockContext);
 
     const {darkMode} = useContext(ThemeContext);

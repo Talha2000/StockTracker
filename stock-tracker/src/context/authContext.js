@@ -44,10 +44,14 @@ export const AuthContextProvider = ({children}) => {
   };
 
     const login = async(inputs) => {
-        // const res = await axios.post("/api/auth/login", inputs);
+      try {
         const res = await axios.post("https://stocktrackerapi.onrender.com/api/auth/login", inputs);
         setCurrentUser(res.data);
         sessionStorage.setItem('user', JSON.stringify(res.data));
+        return { ok: true };
+      } catch (error) {
+        return { ok: false, error: error.message };
+      }
     }
 
     const logout = async(inputs) => {
