@@ -18,4 +18,4 @@ To run this project, you will need to enter the following command to install all
 
 Once you have installed the dependencies, run the project with the following command:
 
-`npm run dev`
+`npm start`
