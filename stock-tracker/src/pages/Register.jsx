@@ -97,7 +97,7 @@ const Register = () =>  {
                 Sign in
           </button>
         )}
-        {err && <p className='text-red-400 pl-14'>{err}</p>}
+        {err && <p className='text-red-400 flex justify-center'>{err}</p>}
         <span className="text-white">Already have an account?
         <Link to="/login" className="text-cyan-300"> Login </Link>
         </span>
