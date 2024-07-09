@@ -30,9 +30,11 @@ const Login = () => {
     try {
       // await axios.post("/auth/login", inputs);
       const res = await login(inputs);
-      console.log("This is the response from login", res)
       if (res.ok) {
         navigate('/META');
+        setLoading(false);
+      } else {
+        setError("Incorrect Credentials")
         setLoading(false);
       }
     }
@@ -71,7 +73,7 @@ const Login = () => {
             </button>
           )}
     
-          {err && <p className='text-red-400 pl-14'>{err}</p>}
+          {err && <p className='text-red-400 flex justify-center'>{err}</p>}
           <span className="text-white">Don't have an account? 
           <Link to="/register" className="text-cyan-300"> Sign up </Link>
           </span>
