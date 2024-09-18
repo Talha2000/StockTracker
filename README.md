@@ -1,21 +1,29 @@
 # Stock Tracker
 
 
-### About this Project:
-This is a stock tracker application designed for personal use. The project uses the Finnhub REST API to return data associated with any stock symbol.
+### About This Project
 
-The Finnhub REST api accpets form-encoided request bodies and returns a response in JSON-encoded responses while returning proper HTTP responses and verbs.
+The Stock Tracker application was initially created as a project to deepen my understanding of React. Inspired by WealthSimple's intuitive and user-friendly stock tracking interface, I aimed to design a similar tool that simplifies monitoring stock data.
 
-This project currently uses the free limit which allows us to make 30 api calls/second.
+This application uses the Finnhub REST API to fetch real-time data for various stock symbols, providing users with up-to-date stock information. By working on this project, I aimed to enhance my skills in React while building a tool that reflects the clean and efficient design principles seen in leading financial platforms.
 
-<strong> The graphing feature will not work anymore. The data required to create these graphs are locked behind Finnhub's premimum subscription.<strong>
+<strong>Important: </strong> The graphing feature is currently disabled as it requires data available only through Finnhub's premium subscription.
 
-### How to Run:
+### Features
+- Fetch stock data using various stock symbols.
+- Real-time updates on stock information. (Realistically this would be implemented with the paid version)
 
-To run this project, you will need to enter the following command to install all the dependencies:
+### Future Improvements
 
-`npm install`
+- Add Graphing Feature
+  - Re-enable the graphing functionality by integrating a premium Finnhub subscription or an alternative data source.
+- Expand Data Analysis
+  - Implement additional analytical tools to provide more in-depth stock performance insights.
+- Refine Dashboard Styling
+  - Enhance the visual design of the dashboard to make it more intuitive and user-friendly.
+- Notifications
+  - Integrate a notification system to alert users about significant stock changes or news.
 
-Once you have installed the dependencies, run the project with the following command:
+### Contributors
 
-`npm start`
+- Talha Amjad - Initial development and ongoing maintenance/improvements
