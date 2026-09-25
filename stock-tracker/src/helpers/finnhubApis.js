@@ -1,61 +1,26 @@
-const basePath = "https://finnhub.io/api/v1";
-const api_key = "cgk8knpr01qq3c3u2ma0cgk8knpr01qq3c3u2mag"
+// Market data is served by our own API (/api/market/*); the provider key lives server-side only.
+const basePath = "https://stocktrackerapi.onrender.com/api/market";
 
-// export const StockContextProvider = ({children}) => {
-    // const [stockSymbol, setStockSymbol] = useState("FB");
+const get = async (path, params) => {
+    const response = await fetch(`${basePath}${path}?${new URLSearchParams(params)}`);
+    if (!response.ok) {
+        throw new Error(`An error has occured: ${response.status}`);
+    }
+    return await response.json();
+};
 
 // Stock lookup
-export const searchSymbol = async (query) => {
-    const url = `${basePath}/search?q=${query}&token=${api_key}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-    const message = `An error has occured: ${response.status}`;
-    throw new Error(message);
-    }
-    return await response.json();
-};
+export const searchSymbol = (query) => get("/search", { q: query });
 
-// Company Profile 2 API call to finnhub api
-export const companyDetails = async (symbol) => {
-    const url = `${basePath}/stock/profile2?symbol=${symbol}&token=${api_key}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        const message = `An error has occured: ${response.status}`;
-        throw new Error(message);
-    }
-    return await response.json();
-    };
+// Company Profile
+export const companyDetails = (symbol) => get("/profile", { symbol });
 
 // Stock Price - quote
-export const stockQuote = async (symbol) => {
-    const url = `${basePath}/quote?symbol=${symbol}&token=${api_key}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        const message = `An error has occured: ${response.status}`;
-        throw new Error(message);
-    }
-    return await response.json();
-    };
+export const stockQuote = (symbol) => get("/quote", { symbol });
 
 // Stock Candles
-export const getHistoricalData = async (symbol, resolution, from, to) => {
-    const url = `${basePath}/stock/candle?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${to}&token=${api_key}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        const message = `An error has occured: ${response.status}`;
-        throw new Error(message);
-    }
-    return await response.json();
-};
-
+export const getHistoricalData = (symbol, resolution, from, to) =>
+    get("/candles", { symbol, resolution, from, to });
 
 // Company news YYYY-MM-DD
-export const companyNews = async (symbol, from, to) => {
-    const url = `${basePath}/company-news?symbol=${symbol}&from=${from}&to=${to}&token=${api_key}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        const message = `An error has occured: ${response.status}`;
-        throw new Error(message);
-    }
-    return await response.json();
-};
+export const companyNews = (symbol, from, to) => get("/news", { symbol, from, to });
