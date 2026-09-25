@@ -2,3 +2,8 @@
 .env
 # Local Netlify folder
 .netlify
+
+# Build/test output
+dist
+playwright-report
+test-results

@@ -5,8 +5,21 @@ The rehaul plan and current phase status live in [docs/REHAUL_PLAN.md](docs/REHA
 
 ## Target stack (rehaul)
 Vite, React 19, TypeScript (strict), React Router 7, Tailwind v4, shadcn/ui (Radix), TanStack Query,
-Recharts, `motion`. Market data goes through the Express API only: Finnhub for quotes/search/profile/news,
+Recharts, `motion` (add in Phase 4 when animating). Market data goes through the Express API only: Finnhub for quotes/search/profile/news,
 Twelve Data for historical candles. **API keys never ship in the client bundle.**
+
+## Commands (run in `stock-tracker/`)
+`npm run dev` (port 3000, proxies `/api` to `localhost:5001`), `npm run lint`, `npm run typecheck`,
+`npm test` (Vitest), `npm run test:e2e` (Playwright, all API mocked), `npm run build`.
+API: `cd API && npm run devStart`. Secrets live in the repo-root `.env` (gitignored; see `.env.example`).
+
+## Structure and conventions
+- `src/lib` (api client + zod schemas, formatters), `src/hooks` (TanStack Query), `src/context`
+  (`*.ts` = context + hook, `*Provider.tsx` = component; split for react-refresh), `src/components`, `src/pages`.
+- Import via `@/` alias. Validate every API response with zod in `lib/api.ts`; no `any`.
+- Theme = `dark` class on `<html>`; style with Tailwind `dark:` variants, never JS ternaries on theme.
+- **TypeScript is pinned to ~6**: typescript-eslint does not support TS 7 yet. Revisit when it does.
+- Do not `rm -rf` in this repo from the agent shell (blocked); use `git rm` for tracked files.
 
 ## Design direction
 Clean, modern fintech in the style of Wealthsimple: generous whitespace, calm neutral palette with a single
