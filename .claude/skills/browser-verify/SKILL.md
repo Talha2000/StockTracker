@@ -12,6 +12,11 @@ Goal: prove the change works by using the app, not by reading code.
 2. Start the dev servers if not running (client via `npm run dev` in `stock-tracker/`, API via `npm start`
    in `API/`). Use background runs; wait for the port instead of sleeping blindly.
 
+## Preferred method
+Write a throwaway Playwright spec (delete it afterward) that mocks the API via `e2e/fixtures/mockApi.ts`, loops
+viewport x theme, records console errors/warnings, `pageerror`, `requestfailed` and direct provider calls, and
+saves screenshots to the scratchpad; then read the screenshots. Use the MCP tools below for interactive poking.
+
 ## Procedure (Playwright MCP tools: `browser_navigate`, `browser_snapshot`, `browser_click`, etc.)
 1. Navigate to the affected route. Prefer `browser_snapshot` (accessibility tree) over screenshots for
    assertions; take screenshots only as evidence.
