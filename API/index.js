@@ -5,7 +5,8 @@ const {errorHandler} = require('./Middleware/errorHandler')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-dotenv.config(); // Load .env file into process.env
+dotenv.config(); // Load API/.env into process.env
+dotenv.config({ path: require('path').join(__dirname, '..', '.env') }); // Repo-root .env (FINNHUB_KEY)
 // Connect to MongoDB
 connectDB();
 
@@ -35,6 +36,9 @@ app.use('/api/auth', AuthRoutes);
 
 const StockRoutes = require('./routes/stock');
 app.use('/api/stock', StockRoutes);
+
+const MarketRoutes = require('./routes/market');
+app.use('/api/market', MarketRoutes);
 
 const UserRoutes = require('./routes/users');
 app.use('/api/users', UserRoutes);
