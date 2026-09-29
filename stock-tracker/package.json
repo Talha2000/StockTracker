@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -11,9 +14,7 @@
     "typecheck": "tsc -b --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:e2e": "playwright test",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.2",
@@ -43,7 +44,6 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
-    "gh-pages": "^6.3.0",
     "globals": "^17.12.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.9.9",
