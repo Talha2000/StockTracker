@@ -1,14 +1,15 @@
 const express = require('express');
-const connectDB = require('./db'); // Import the MongoDB client and database instance
+const prisma = require('./db'); // Prisma client (Neon Postgres); also exports connectDB()
 const cookieParser = require('cookie-parser')
 const {errorHandler} = require('./Middleware/errorHandler')
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config(); // Load API/.env into process.env
-dotenv.config({ path: require('path').join(__dirname, '..', '.env') }); // Repo-root .env (FINNHUB_KEY)
-// Connect to MongoDB
-connectDB();
+dotenv.config({ path: require('path').join(__dirname, '..', '.env') }); // Repo-root .env (FINNHUB_KEY, DATABASE_URL)
+prisma.connectDB().catch((err) => {
+  console.error('Failed to connect to the database:', err);
+  process.exit(1);
+});
 
 const app = express()
 app.use(cors());
@@ -26,11 +27,6 @@ app.use((req, res, next) => {
 app.use(express.json())
 app.use(express.urlencoded({extended: false}));
 
-
-app.use(errorHandler);
-
-app.use(bodyParser.json());
-
 const AuthRoutes = require('./routes/auth');
 app.use('/api/auth', AuthRoutes);
 
@@ -46,6 +42,12 @@ app.use('/api/users', UserRoutes);
 app.get("/", (req, res) => {
   res.json("hello this is the backend")
 })
+
+// Must be registered after every route: Express only treats a 4-arg
+// middleware as an error handler, and only errors from routes before it
+// reach it. It was previously registered before the routes, so it never ran.
+app.use(errorHandler);
+
 app.listen(process.env.PORT || 5001, ()=> {
     console.log(`Server running on port ${process.env.PORT}`);
 })

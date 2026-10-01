@@ -4,27 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "devStart": "nodemon index.js"
+    "start": "prisma migrate deploy && node index.js",
+    "devStart": "nodemon index.js",
+    "postinstall": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "express-async-handler": "^1.2.0",
-    "finnhub": "^1.2.17",
     "jsonwebtoken": "^9.0.0",
-    "mongodb": "^6.1.0",
-    "mongoose": "^7.6.11",
-    "mssql": "^9.1.1",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.2.0",
-    "promise-mysql": "^5.2.0",
-    "request": "^2.88.2"
+    "prisma": "^6.19.3"
   }
 }
