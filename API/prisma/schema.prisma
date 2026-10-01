@@ -5,9 +5,12 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // Prisma Migrate needs a direct (non -pooler) connection: Neon's pooled URL
-  // doesn't support the advisory locks migrations use.
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  // No directUrl for now (see CLAUDE.md): Prisma Migrate then runs over the
+  // pooled connection too, which doesn't support the advisory locks it
+  // normally takes — fine as long as migrations are applied by running
+  // `npm run db:migrate`/`db:deploy` locally against DATABASE_URL_UNPOOLED
+  // (still in the local .env), not from Vercel's build. Add directUrl back
+  // (and DATABASE_URL_UNPOOLED on Vercel) if that ever breaks.
 }
 
 model User {

@@ -1,0 +1,16 @@
+# vercel deploy does NOT read .gitignore — it has its own file list, and
+# without this, secrets (.env) and other local-only files get uploaded into
+# the deployment bundle even though git never tracked them. Learned the hard
+# way: see .claude/skills/pentest/LEARNINGS.md (2026-10-01).
+.env
+.env.*
+!.env.example
+.git
+.vercel
+node_modules
+*.log
+stock-tracker/node_modules
+stock-tracker/dist
+stock-tracker/playwright-report
+stock-tracker/test-results
+API/node_modules

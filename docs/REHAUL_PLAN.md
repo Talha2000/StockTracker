@@ -45,29 +45,45 @@ update all skills and docs.
       `npm install` (Render) always has a client; `start` now runs `prisma migrate deploy` before booting.
 - [x] Verified end-to-end against the real Neon database: register, login, `/me`, save (idempotent via
       upsert), list, remove — all exercised with curl, not just read.
-- [ ] **Owner action:** confirm Render's "Start Command" is `npm start` (not a bare `node index.js`), so
-      `prisma migrate deploy` actually runs on each production deploy. Also double check Render's env vars
-      still have the real `ACCESS_TOKEN`, and add `DATABASE_URL` / `DATABASE_URL_UNPOOLED` there too.
+- [x] ~~Owner action re: Render~~ — moot, API moved off Render entirely (see 2a.1).
 - [ ] Nice-to-have, not done: a separate Neon branch for local/dev vs. the production branch, so local
       testing can't touch prod data. One Neon project/branch is in use for both right now.
 
 ### Phase 2a.1: Hosting — Render → Vercel serverless [x] (same branch)
 - [x] `API/index.js` now exports the Express `app`; `app.listen()`/`connectDB()` only run when the file is
       executed directly (`require.main === module`), not when imported as a request handler.
-- [x] `API/api/index.js` (Vercel's serverless entry point) + `API/vercel.json` (catch-all rewrite to it,
-      `buildCommand: npm run db:deploy` so migrations apply on every deploy, same as the old `npm start`).
+- [x] `API/api/index.js` (Vercel's serverless entry point) + `API/vercel.json` (catch-all rewrite to it).
 - [x] Removed the client's hardcoded Render URL fallback (`lib/api.ts`); production now requires
       `VITE_API_URL` and throws clearly at runtime if it's missing, instead of silently calling the
       wrong host.
 - [x] Verified locally by serving the exported app through a plain `http.createServer` (how Vercel's Node
       runtime invokes a serverless function) and hitting a real route end-to-end.
-- [ ] **Owner actions:**
-      1. New Vercel project for `API/` (Root Directory = `API`, Framework Preset = Other). Add env vars:
-         `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `FINNHUB_KEY`, `TWELVEDATA_KEY`, `ACCESS_TOKEN`.
-      2. Deploy it, note the resulting URL (e.g. `https://stocktracker-api.vercel.app`).
-      3. On the **client's** Vercel project, add `VITE_API_URL=https://<that-url>/api` and redeploy.
-      4. Decommission the Render service once the new API is confirmed working.
-      5. CORS is still wide open (`Access-Control-Allow-Origin: *`, Phase 2b) — fine for now, but tighten
+- [x] `schema.prisma`'s `directUrl` removed (owner chose not to set `DATABASE_URL_UNPOOLED` on Vercel for
+      now): Prisma Migrate runs over the pooled connection too. Verified `prisma migrate deploy` actually
+      works that way against this Neon project before relying on it. `buildCommand` removed from
+      `vercel.json` — migrations are applied by running `npm run db:migrate`/`db:deploy` locally, not
+      automatically on Vercel's build. Revisit (add `directUrl` + the env var back) if that ever breaks.
+- [x] Owner created the Vercel project (`stock-tracker`, Root Directory = `API`) and added `DATABASE_URL` +
+      `FINNHUB_KEY`. Linked and deployed from here via the Vercel CLI (already authenticated on this
+      machine). Live at **https://stock-tracker-lake-tau.vercel.app**.
+- [x] **Incident found and fixed during that first deploy** — full writeup in
+      `.claude/skills/pentest/LEARNINGS.md` (2026-10-01). Summary: `vercel deploy` ignores `.gitignore`
+      and has its own inclusion rules, so the repo-root `.env` (real `DATABASE_URL` + `FINNHUB_KEY`) got
+      uploaded into the bundle and read by the running function; separately, with no `public/` directory,
+      Vercel's zero-config static fallback served the *entire* source tree — including `.env` itself —
+      over plain HTTP on the public production URL. Fixed with `.vercelignore` (root + `API/`) and an
+      empty `API/public/`; redeployed and **verified** the leak was actually gone (not just the route
+      404ing) by confirming the behavior that depended on the leaked secret changed.
+      **Owner action: rotate the Neon DB password and the Finnhub key** — both were briefly served
+      publicly in plaintext. Low realistic risk (new, unshared URL, ~2 minute window) but real exposure of
+      live credentials, not placeholders.
+- [ ] **Owner actions remaining:**
+      1. Set `VITE_API_URL=https://stock-tracker-lake-tau.vercel.app/api` on the **client's** Vercel
+         project and redeploy it.
+      2. Add a real `ACCESS_TOKEN` to the API's Vercel env vars — login is currently broken in production
+         (deferred on purpose; `jwt.sign` has no secret to use without it).
+      3. Decommission the Render service once the above is confirmed working end-to-end.
+      4. CORS is still wide open (`Access-Control-Allow-Origin: *`, Phase 2b) — fine for now, but tighten
          before this matters.
 
 ### Phase 2b: API hardening — remaining

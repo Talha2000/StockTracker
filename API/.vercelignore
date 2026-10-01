@@ -1,0 +1,8 @@
+# Same reasoning as the repo-root .vercelignore — belt and suspenders in
+# case a deploy is ever run with cwd=API instead of the repo root.
+.env
+.env.*
+.git
+.vercel
+node_modules
+*.log

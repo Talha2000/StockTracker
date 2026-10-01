@@ -15,16 +15,22 @@ Client (run in `stock-tracker/`): `npm run dev` (port 3000, proxies `/api` to `l
 `npm run lint`, `npm run typecheck`, `npm test` (Vitest), `npm run test:e2e` (Playwright, all API mocked),
 `npm run build`.
 API (run in `API/`): `npm run devStart`. `npm run db:migrate` after any `schema.prisma` change (creates +
-applies a migration locally); `npm run db:studio` to browse data. `index.js` exports the Express `app` and
-only calls `app.listen()`/connects to the DB when run directly (`require.main === module`) — Vercel
-instead imports it through `api/index.js` as a request handler. Local, `npm start` (any traditional host)
-and Vercel's build (`vercel.json`'s `buildCommand`) all run `prisma migrate deploy` before the app serves
-traffic, so schema changes apply automatically on deploy either way.
+applies a migration locally) — **this does not happen automatically on deploy**; Vercel's build only runs
+`npm install` (which generates the Prisma client via `postinstall`), so always migrate locally before
+pushing a schema change. `npm run db:studio` to browse data. `index.js` exports the Express `app` and only
+calls `app.listen()`/connects to the DB when run directly (`require.main === module`) — Vercel instead
+imports it through `api/index.js` as a request handler. Live API: https://stock-tracker-lake-tau.vercel.app
+(Vercel project `stock-tracker`, Root Directory `API`).
 Secrets live in the repo-root `.env` locally (gitignored; see `.env.example`) and in each Vercel project's
 own Environment Variables in production (the client project needs `VITE_API_URL` pointed at the API
 project's URL; the API project needs the rest): `FINNHUB_KEY`, `TWELVEDATA_KEY`, `DATABASE_URL` (Neon
-pooled), `DATABASE_URL_UNPOOLED` (Neon direct — same host, no `-pooler`; Prisma Migrate needs this one),
-`ACCESS_TOKEN` (JWT secret — any local value works for dev).
+pooled — the only one currently set on Vercel), `DATABASE_URL_UNPOOLED` (Neon direct, same host minus
+`-pooler`; only used locally for Prisma Migrate — not set on Vercel on purpose, see `schema.prisma`'s
+comment), `ACCESS_TOKEN` (JWT secret — not yet set on Vercel, so production login is currently broken;
+any local value works for dev).
+**`.vercelignore` (root and `API/`) must keep excluding `.env*`** — `vercel deploy` does not read
+`.gitignore` and will upload real secrets into the deployment bundle without it (this actually happened
+once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
 
 ## Structure and conventions
 - `src/lib` (api client + zod schemas, formatters), `src/hooks` (TanStack Query), `src/context`
