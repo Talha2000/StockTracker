@@ -1,4 +1,3 @@
 {
-  "buildCommand": "npm run db:deploy",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index.js" }]
 }
