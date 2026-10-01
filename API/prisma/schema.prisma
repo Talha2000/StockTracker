@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // Prisma Migrate needs a direct (non -pooler) connection: Neon's pooled URL
+  // doesn't support the advisory locks migrations use.
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  username  String     @unique
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  watchlist Watchlist[]
+}
+
+// One row per (user, symbol) a user has bookmarked. Replaces the old Mongo
+// UserStock collection, which stored the user id as a loose string with no
+// real foreign key; this enforces it and cascades deletes.
+model Watchlist {
+  id          String   @id @default(cuid())
+  userId      String
+  stockSymbol String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, stockSymbol])
+  @@index([userId])
+}

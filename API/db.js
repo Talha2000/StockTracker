@@ -1,16 +1,13 @@
-const mongoose = require('mongoose');
+const { PrismaClient } = require('@prisma/client');
+
+// A single shared client (per Prisma's recommendation) so we don't open a new
+// connection pool on every import; Node's require cache makes this a singleton.
+const prisma = new PrismaClient();
 
 const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.ATLAS_URI, {
-            useUnifiedTopology: true,
-            useNewUrlParser: true,
-            dbName: 'StockData', // Specify the database name here
-        });
-        console.log('MongoDB connected');
-    } catch (err) {
-        console.error(err);
-    }
-}
+  await prisma.$connect();
+  console.log('Connected to Postgres (Neon) via Prisma');
+};
 
-module.exports = connectDB
+module.exports = prisma;
+module.exports.connectDB = connectDB;

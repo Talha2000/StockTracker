@@ -23,3 +23,23 @@
   almost everything. If you must redact a committed secret without force-pushing, don't rewrite history at
   all — just rotate the secret and add a normal commit removing it from current files; keep the history
   rewrite option only for when you're prepared to force-push.
+- 2026-10-01: Real bug caught by tracing the data: `userController.getMe` did
+  `const { id, username } = req.user.id` — destructuring a string — so `/api/users/me` always returned
+  `{}`. `req.user` is the decoded JWT payload itself; never assume a nested shape without checking what
+  the middleware actually sets. Found by running the endpoint with curl, not by reading it.
+- 2026-10-01: Prisma 7's default generator (`provider = "prisma-client"`) emits TypeScript-only source
+  (no compiled JS) and needs either a build step or a Node version with stable native TS stripping. A
+  plain CommonJS/JS app without a build pipeline should stay on Prisma 6 (`prisma-client-js`) until it's
+  converted to TS — don't take the "latest major" by default for infra deps; check what the generated
+  output actually requires at runtime first.
+- 2026-10-01: Neon connection strings: the pooled host has `-pooler` inserted before the region
+  (`ep-xxx-pooler.region.aws.neon.tech`); the direct host is identical minus `-pooler`. Prisma Migrate
+  needs the direct one (`directUrl`) — the pooler doesn't support the advisory locks migrations take.
+  Verified against Neon's own docs rather than assumed, since a wrong guess here breaks migrations.
+- 2026-10-01: Prisma's CLI (migrate/generate/studio) only auto-loads a `.env` next to `schema.prisma`.
+  If secrets live elsewhere (here: repo root, shared with the client/API's other keys), add a
+  `prisma.config.ts` that loads it explicitly — and note that *any* `prisma.config.ts` present disables
+  Prisma's own auto-.env-loading entirely, so it must do all of the loading itself.
+- 2026-10-01: Don't trust an endpoint from reading the controller — ran the full flow with curl against
+  the real database (register → login → /me → save → duplicate save → list → remove → list) and caught
+  the getMe bug that way. Reading the diff would not have caught it.

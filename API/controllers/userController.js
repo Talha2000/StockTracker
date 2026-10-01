@@ -1,20 +1,14 @@
-// const jwt = require('jsonwebtoken')
-// const bcrypt = require('bcryptjs')
-// const asyncHandler = require('express-async-handler')
-// const User = require('../Models/userModel')
-// const asyncHandler = require('express-async-handler')
-
-// @desc   Get user data
+// @desc   Get the signed-in user's id and username from their JWT
 // @route  GET /api/users/me
 // @access Private
 const getMe = (req, res) => {
-    // res.status(200).json("hello");
-    const { id, username } = req.user.id;
-    res.status(200).json({id, username})
-}
+  // req.user is the decoded JWT payload (see authMiddleware), not a document
+  // to destructure into — the old code did `req.user.id` here, which is a
+  // string, and tried to pull { id, username } out of it.
+  const { id, username } = req.user;
+  res.status(200).json({ id, username });
+};
 
 module.exports = {
-    getMe,
-    // loginUser,
-    // getMe,
-}
+  getMe,
+};
