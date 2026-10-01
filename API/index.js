@@ -6,10 +6,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config(); // Load API/.env into process.env
 dotenv.config({ path: require('path').join(__dirname, '..', '.env') }); // Repo-root .env (FINNHUB_KEY, DATABASE_URL)
-prisma.connectDB().catch((err) => {
-  console.error('Failed to connect to the database:', err);
-  process.exit(1);
-});
 
 const app = express()
 app.use(cors());
@@ -48,6 +44,17 @@ app.get("/", (req, res) => {
 // reach it. It was previously registered before the routes, so it never ran.
 app.use(errorHandler);
 
-app.listen(process.env.PORT || 5001, ()=> {
-    console.log(`Server running on port ${process.env.PORT}`);
-})
+// Vercel imports this file for its request handler (see api/index.js) and
+// never runs it directly, so app.listen()/connectDB() only happen for a
+// traditional host (Render) or local dev (`npm run devStart`).
+if (require.main === module) {
+  prisma.connectDB().catch((err) => {
+    console.error('Failed to connect to the database:', err);
+    process.exit(1);
+  });
+  app.listen(process.env.PORT || 5001, () => {
+    console.log(`Server running on port ${process.env.PORT || 5001}`);
+  });
+}
+
+module.exports = app;

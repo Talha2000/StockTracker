@@ -43,3 +43,9 @@
 - 2026-10-01: Don't trust an endpoint from reading the controller — ran the full flow with curl against
   the real database (register → login → /me → save → duplicate save → list → remove → list) and caught
   the getMe bug that way. Reading the diff would not have caught it.
+- 2026-10-01: Moved the API from Render to Vercel serverless. Key gotcha: never auto-run blocking
+  module-load-time side effects (`db.connect()` + `process.exit(1)` on failure) in code that a serverless
+  platform imports as a handler — guard them with `require.main === module` so they only run for a
+  traditional long-running host/local dev, not every cold start. Verified the exported app actually works
+  as a request handler (not just that `require()` doesn't throw) by driving it through a plain
+  `http.createServer(app)` and hitting a real route — that's the shape Vercel's Node runtime uses.

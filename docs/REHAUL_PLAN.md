@@ -51,6 +51,25 @@ update all skills and docs.
 - [ ] Nice-to-have, not done: a separate Neon branch for local/dev vs. the production branch, so local
       testing can't touch prod data. One Neon project/branch is in use for both right now.
 
+### Phase 2a.1: Hosting — Render → Vercel serverless [x] (same branch)
+- [x] `API/index.js` now exports the Express `app`; `app.listen()`/`connectDB()` only run when the file is
+      executed directly (`require.main === module`), not when imported as a request handler.
+- [x] `API/api/index.js` (Vercel's serverless entry point) + `API/vercel.json` (catch-all rewrite to it,
+      `buildCommand: npm run db:deploy` so migrations apply on every deploy, same as the old `npm start`).
+- [x] Removed the client's hardcoded Render URL fallback (`lib/api.ts`); production now requires
+      `VITE_API_URL` and throws clearly at runtime if it's missing, instead of silently calling the
+      wrong host.
+- [x] Verified locally by serving the exported app through a plain `http.createServer` (how Vercel's Node
+      runtime invokes a serverless function) and hitting a real route end-to-end.
+- [ ] **Owner actions:**
+      1. New Vercel project for `API/` (Root Directory = `API`, Framework Preset = Other). Add env vars:
+         `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `FINNHUB_KEY`, `TWELVEDATA_KEY`, `ACCESS_TOKEN`.
+      2. Deploy it, note the resulting URL (e.g. `https://stocktracker-api.vercel.app`).
+      3. On the **client's** Vercel project, add `VITE_API_URL=https://<that-url>/api` and redeploy.
+      4. Decommission the Render service once the new API is confirmed working.
+      5. CORS is still wide open (`Access-Control-Allow-Origin: *`, Phase 2b) — fine for now, but tighten
+         before this matters.
+
 ### Phase 2b: API hardening — remaining
 - [ ] Convert `API/` to TypeScript (or add types + lint at minimum) — also unlocks Prisma 7.
 - [ ] Harden `/api/market/*`: zod-validate upstream, caching, rate limiting, helmet, CORS allowlist.

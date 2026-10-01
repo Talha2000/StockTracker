@@ -11,10 +11,15 @@ import {
 } from './schemas';
 import { getToken } from './session';
 
-// Dev uses the Vite proxy to the local API; production defaults to the hosted API unless overridden.
-export const API_URL: string =
-  (import.meta.env.VITE_API_URL as string | undefined) ??
-  (import.meta.env.DEV ? '/api' : 'https://stocktrackerapi.onrender.com/api');
+// Dev uses the Vite proxy to the local API. Production has no hardcoded
+// fallback (the API's host changes with where it's deployed, e.g. Vercel's
+// generated URL) — set VITE_API_URL on the client's Vercel project.
+const envApiUrl = import.meta.env.VITE_API_URL as string | undefined;
+if (!envApiUrl && !import.meta.env.DEV) {
+  // Fails loudly instead of silently calling the wrong host.
+  throw new Error('VITE_API_URL is not set — the client has no API to call.');
+}
+export const API_URL: string = envApiUrl ?? '/api';
 
 export const http = axios.create({ baseURL: API_URL });
 
