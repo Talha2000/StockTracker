@@ -76,15 +76,20 @@ update all skills and docs.
       404ing) by confirming the behavior that depended on the leaked secret changed.
       **Owner action: rotate the Neon DB password and the Finnhub key** — both were briefly served
       publicly in plaintext. Low realistic risk (new, unshared URL, ~2 minute window) but real exposure of
-      live credentials, not placeholders.
-- [ ] **Owner actions remaining:**
-      1. Set `VITE_API_URL=https://stock-tracker-lake-tau.vercel.app/api` on the **client's** Vercel
-         project and redeploy it.
-      2. Add a real `ACCESS_TOKEN` to the API's Vercel env vars — login is currently broken in production
-         (deferred on purpose; `jwt.sign` has no secret to use without it).
-      3. Decommission the Render service once the above is confirmed working end-to-end.
-      4. CORS is still wide open (`Access-Control-Allow-Origin: *`, Phase 2b) — fine for now, but tighten
-         before this matters.
+      live credentials, not placeholders. [x] Done — owner rotated both, verified working, synced to
+      Vercel (`vercel env rm` + `add`), redeployed, confirmed live with the new DB password.
+- [x] `ACCESS_TOKEN` generated (`openssl rand -hex 32`), added to the API's Vercel env vars
+      (Production + Preview) and redeployed; login confirmed working end-to-end in production.
+- [x] `VITE_API_URL=https://stock-tracker-lake-tau.vercel.app/api` added to the **client's** Vercel
+      project (`stock-tracker-dz4a`, Production + Preview as a `config` var, not `secret` — it's a public
+      URL, not sensitive) and redeployed; confirmed the built JS bundle at
+      https://mystocktracker.vercel.app actually calls the new API URL, not just that the var was set.
+- [ ] **Owner action remaining:** decommission the Render service now that the Vercel API is confirmed
+      working end-to-end (register, login, watchlist, all exercised live). CORS is still wide open
+      (`Access-Control-Allow-Origin: *`, Phase 2b) — fine for now, but tighten before this matters.
+- Note: the repo-root `.vercel/` link (local-only, gitignored) gets pointed at whichever Vercel project
+  you're deploying — `stock-tracker` for the API, `stock-tracker-dz4a` for the client. Check which one is
+  linked (`cat .vercel/project.json`, if present) before running `vercel deploy` from the repo root.
 
 ### Phase 2b: API hardening — remaining
 - [ ] Convert `API/` to TypeScript (or add types + lint at minimum) — also unlocks Prisma 7.

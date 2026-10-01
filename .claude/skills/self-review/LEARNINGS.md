@@ -49,3 +49,19 @@
   traditional long-running host/local dev, not every cold start. Verified the exported app actually works
   as a request handler (not just that `require()` doesn't throw) by driving it through a plain
   `http.createServer(app)` and hitting a real route — that's the shape Vercel's Node runtime uses.
+- 2026-10-01: Handling real secrets for the user: prefer piping values through the shell (read a local
+  `.env`, pipe straight into e.g. `vercel env add` via stdin) over using the Read tool on a secret file —
+  Read's output renders into the visible conversation transcript, which is a real (if different) exposure
+  from the thing it's protecting against. A shell pipe never puts the raw value in the transcript.
+- 2026-10-01: Vercel CLI: `vercel env add NAME env` defaults to `--type secret` (hidden, not pullable).
+  For a value that's public anyway (e.g. `VITE_API_URL` — it ends up inlined in the client bundle regardless),
+  use `--type config` instead; the CLI itself warns when a `VITE_`-prefixed var is added, since those are
+  always exposed to the browser by Vite's convention. Don't mark genuinely public values as secret — it
+  just makes them harder to read back later for no security benefit.
+- 2026-10-01: This repo has two separate Vercel projects sharing one git repo (API: Root Directory `API`;
+  client: Root Directory `stock-tracker`). `vercel deploy` always targets whichever project the local
+  `.vercel/project.json` link points at — there's no per-command `--project` override for `deploy` itself
+  (unlike `env ls`/`env add`, which do take `--project`). Relink (`vercel link --project <name> --yes`)
+  before deploying the other one, and deploy from the repo root either way (not from inside the
+  subdirectory) so the project's configured Root Directory setting resolves correctly — see the earlier
+  "Root Directory API does not exist" failure in pentest/LEARNINGS.md.
