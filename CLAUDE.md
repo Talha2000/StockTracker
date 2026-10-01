@@ -1,7 +1,8 @@
 # StockTracker
 
-Monorepo: `stock-tracker/` (React client, deployed on Vercel) and `API/` (Express backend, deployed on
-Render), with Postgres on Neon as the database, accessed via Prisma (`API/prisma/schema.prisma`).
+Monorepo, two separate Vercel projects: `stock-tracker/` (React client) and `API/` (Express backend,
+exported as a Vercel serverless function — see `API/api/index.js` and `API/vercel.json`), with Postgres
+on Neon as the database, accessed via Prisma (`API/prisma/schema.prisma`). No Render anymore.
 The rehaul plan and current phase status live in [docs/REHAUL_PLAN.md](docs/REHAUL_PLAN.md).
 
 ## Target stack (rehaul)
@@ -14,11 +15,16 @@ Client (run in `stock-tracker/`): `npm run dev` (port 3000, proxies `/api` to `l
 `npm run lint`, `npm run typecheck`, `npm test` (Vitest), `npm run test:e2e` (Playwright, all API mocked),
 `npm run build`.
 API (run in `API/`): `npm run devStart`. `npm run db:migrate` after any `schema.prisma` change (creates +
-applies a migration locally); `npm run db:studio` to browse data; `npm start` runs `prisma migrate deploy`
-before booting, so production applies pending migrations automatically on deploy.
-Secrets live in the repo-root `.env` (gitignored; see `.env.example`): `FINNHUB_KEY`, `TWELVEDATA_KEY`,
-`DATABASE_URL` (Neon pooled), `DATABASE_URL_UNPOOLED` (Neon direct — same host, no `-pooler`; Prisma
-Migrate needs this one), `ACCESS_TOKEN` (JWT secret — any local value works for dev, Render has the real one).
+applies a migration locally); `npm run db:studio` to browse data. `index.js` exports the Express `app` and
+only calls `app.listen()`/connects to the DB when run directly (`require.main === module`) — Vercel
+instead imports it through `api/index.js` as a request handler. Local, `npm start` (any traditional host)
+and Vercel's build (`vercel.json`'s `buildCommand`) all run `prisma migrate deploy` before the app serves
+traffic, so schema changes apply automatically on deploy either way.
+Secrets live in the repo-root `.env` locally (gitignored; see `.env.example`) and in each Vercel project's
+own Environment Variables in production (the client project needs `VITE_API_URL` pointed at the API
+project's URL; the API project needs the rest): `FINNHUB_KEY`, `TWELVEDATA_KEY`, `DATABASE_URL` (Neon
+pooled), `DATABASE_URL_UNPOOLED` (Neon direct — same host, no `-pooler`; Prisma Migrate needs this one),
+`ACCESS_TOKEN` (JWT secret — any local value works for dev).
 
 ## Structure and conventions
 - `src/lib` (api client + zod schemas, formatters), `src/hooks` (TanStack Query), `src/context`
