@@ -11,3 +11,15 @@
 - 2026-09-24: Old `auth` re-validated the token against `/users/me` before every request; replaced by a single
   axios interceptor + 401 handler. Avoid per-call auth round trips.
 - 2026-09-24: Old API `errorHandler` is registered before the routes so it never runs (Phase 2 fix).
+- 2026-09-30: `npm install` with an existing lockfile/node_modules can silently tolerate a peer-dependency
+  conflict that a fresh `npm ci` (what Vercel/CI runs) rejects with ERESOLVE. Verified this way: installed
+  `eslint@^10` but `eslint-plugin-jsx-a11y@6.10.2` only supports `eslint` up to `^9` (no newer release
+  exists) — passed locally, failed on Vercel. Before shipping a dependency bump, run `rm -rf node_modules &&
+  npm ci` (not just `npm install`) to catch this, or check `npm view <pkg> peerDependencies` for every
+  eslint plugin against the eslint major you're pinning.
+- 2026-09-30: Rewriting git history locally (e.g. `git-filter-repo`) severs the shared ancestor with the
+  unrewritten remote, even for commits that never touched the affected file (parent hash changes cascade).
+  A later `git pull`/rebase against the remote will then replay the entire original history and conflict on
+  almost everything. If you must redact a committed secret without force-pushing, don't rewrite history at
+  all — just rotate the secret and add a normal commit removing it from current files; keep the history
+  rewrite option only for when you're prepared to force-push.
