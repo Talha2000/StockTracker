@@ -4,14 +4,11 @@ import { Link, useNavigate } from 'react-router';
 import { Spinner } from '@/components/Spinner';
 import { authApi } from '@/lib/api';
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const PASSWORD_HINT =
-  'At least 8 characters with an uppercase letter, a lowercase letter, a digit and one of @ $ ! % * ? &';
+const MIN_PASSWORD_LENGTH = 8;
 
 export const Register = () => {
   const navigate = useNavigate();
-  const [inputs, setInputs] = useState({ username: '', email: '', password: '' });
+  const [inputs, setInputs] = useState({ username: '', password: '', confirmPassword: '' });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -24,18 +21,22 @@ export const Register = () => {
     event.preventDefault();
     setError(null);
 
-    if (!EMAIL_RE.test(inputs.email)) {
-      setError('Please enter a valid email address');
+    if (inputs.username.trim().length < 3) {
+      setError('Username must be at least 3 characters');
       return;
     }
-    if (!PASSWORD_RE.test(inputs.password)) {
-      setError(`Password requirements: ${PASSWORD_HINT}`);
+    if (inputs.password.length < MIN_PASSWORD_LENGTH) {
+      setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+      return;
+    }
+    if (inputs.password !== inputs.confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
     setLoading(true);
     try {
-      await authApi.register(inputs);
+      await authApi.register({ username: inputs.username, password: inputs.password });
       void navigate('/login');
     } catch (err) {
       setError(
@@ -73,20 +74,6 @@ export const Register = () => {
           onChange={handleChange}
         />
 
-        <label htmlFor="email" className="mb-2 block text-sm font-medium">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          className="field mb-6"
-          value={inputs.email}
-          onChange={handleChange}
-        />
-
         <label htmlFor="password" className="mb-2 block text-sm font-medium">
           Password
         </label>
@@ -96,14 +83,24 @@ export const Register = () => {
           type="password"
           autoComplete="new-password"
           required
-          aria-describedby="password-hint"
-          className="field mb-2"
+          className="field mb-6"
           value={inputs.password}
           onChange={handleChange}
         />
-        <p id="password-hint" className="mb-6 text-xs text-gray-300">
-          {PASSWORD_HINT}
-        </p>
+
+        <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium">
+          Confirm password
+        </label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          required
+          className="field mb-6"
+          value={inputs.confirmPassword}
+          onChange={handleChange}
+        />
 
         {loading ? (
           <Spinner label="Creating account" />

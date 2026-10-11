@@ -61,4 +61,7 @@ export type SearchResult = z.infer<typeof searchSchema>['result'][number];
 export const bookmarksSchema = z.array(z.object({ id: z.string(), stockSymbol: z.string() }));
 export type Bookmark = z.infer<typeof bookmarksSchema>[number];
 
-export const loginResponseSchema = z.object({ token: z.string() });
+// Auth is an httpOnly cookie now (set by the API, never readable by client
+// JS) — login/me responses only ever carry non-sensitive identity fields.
+export const loginResponseSchema = z.object({ username: z.string() });
+export const meResponseSchema = z.object({ id: z.string(), username: z.string() });

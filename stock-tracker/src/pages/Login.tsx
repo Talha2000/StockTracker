@@ -4,12 +4,13 @@ import { Spinner } from '@/components/Spinner';
 import { useAuth } from '@/context/auth';
 
 export const Login = () => {
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, login } = useAuth();
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({ username: '', password: '' });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  if (authLoading) return null;
   if (isAuthenticated) return <Navigate to="/" replace />;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
