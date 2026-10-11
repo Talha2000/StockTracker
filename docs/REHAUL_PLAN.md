@@ -91,7 +91,7 @@ update all skills and docs.
   you're deploying — `stock-tracker` for the API, `stock-tracker-dz4a` for the client. Check which one is
   linked (`cat .vercel/project.json`, if present) before running `vercel deploy` from the repo root.
 
-### Phase 2b: API hardening — in progress
+### Phase 2b: API hardening [x]
 - [x] Registration simplified: username/password/confirm-password only, `User.email` dropped from the
       schema entirely (migration applied — table was empty, no data loss). Server still validates
       username length and password length independent of the client.
