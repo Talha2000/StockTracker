@@ -67,7 +67,7 @@ export const authApi = {
     const { data } = await http.post<unknown>('/auth/login', input);
     return loginResponseSchema.parse(data);
   },
-  register: async (input: { username: string; email: string; password: string }) => {
+  register: async (input: { username: string; password: string }) => {
     await http.post('/auth/register', input);
   },
   logout: async () => {
