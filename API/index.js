@@ -3,11 +3,26 @@ const prisma = require('./db'); // Prisma client (Neon Postgres); also exports c
 const cookieParser = require('cookie-parser')
 const {errorHandler} = require('./Middleware/errorHandler')
 const cors = require('cors');
+const helmet = require('helmet');
 const dotenv = require('dotenv');
 dotenv.config(); // Load API/.env into process.env
 dotenv.config({ path: require('path').join(__dirname, '..', '.env') }); // Repo-root .env (FINNHUB_KEY, DATABASE_URL)
 
 const app = express()
+
+// This is a pure JSON API called cross-origin by the client (a different
+// Vercel project/domain), so two of helmet's defaults need overriding:
+// - crossOriginResourcePolicy defaults to 'same-origin', which browsers can
+//   enforce even on a CORS-permitted fetch — would silently break the
+//   client's real requests despite the cors() allowlist above saying yes.
+// - contentSecurityPolicy is meant for pages that render HTML/run scripts;
+//   this API never does, and helmet's default CSP has no useful effect here.
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: false,
+  }),
+);
 
 // Was previously just cors() (any origin) followed by a manual middleware
 // that unconditionally set Access-Control-Allow-Origin: * AFTER cors() ran —
