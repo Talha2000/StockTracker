@@ -65,3 +65,28 @@
   before deploying the other one, and deploy from the repo root either way (not from inside the
   subdirectory) so the project's configured Root Directory setting resolves correctly — see the earlier
   "Root Directory API does not exist" failure in pentest/LEARNINGS.md.
+- 2026-10-11: Converting a JS backend to TS: a default `npm install -D typescript @types/express ...`
+  can pull in `@types/express` at a newer major than the actually-installed `express` package (got v5
+  types against an Express 4 runtime) — pin the types package to match the runtime major explicitly
+  (`npm install -D @types/express@^4`), don't trust whatever `npm install` resolves by default for a
+  types package tied to a specific runtime library's version.
+- 2026-10-11: A path built from `__dirname` to reach a file outside the package (here: the repo-root
+  `.env`, one level above `API/`) breaks silently once a build step changes where the running file
+  actually lives (`API/index.ts` compiles to `API/dist/index.js` — one directory deeper, so `../..` was
+  needed, not `..`). `dotenv.config()` fails silently on a missing path, which is exactly what let this
+  slip past a dev run using `tsx` (source location, path still correct) and only broke the *compiled*
+  version. Lesson: test the actual artifact that ships (the compiled build), not just the dev-mode runner,
+  whenever they can resolve paths differently — and prefer trying multiple candidate paths over a single
+  `__dirname`-relative guess when a value must work from more than one possible run location.
+- 2026-10-11: Real bug, not hypothetical, found only by testing in an actual browser against the real
+  local API (not the mocked e2e suite, not curl): a global axios 401-interceptor meant for "your session
+  expired mid-visit, go to /login" also fired for the *expected* 401 from an auth-check probe run on every
+  page load (GET /users/me, used because an httpOnly cookie can't be read client-side to know if a session
+  exists). Result: every page, including /register, force-navigated to /login for a logged-out visitor.
+  curl wouldn't have shown this (no client-side redirect to observe); the mocked e2e suite didn't either,
+  because no test happened to visit an unauthenticated page and assert it *stayed* there — it only checked
+  that protected routes correctly redirect, which this bug coincidentally also satisfied. Lesson: when two
+  different situations both want to redirect to the same place, a test asserting "ends up at X" can pass
+  for the wrong reason; also assert the cases that should *not* redirect. Fixed with a per-request opt-out
+  flag; verified with a real cross-origin (by port) browser test, then added the missing mocked regression
+  test once the real gap was understood.

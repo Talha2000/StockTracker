@@ -115,18 +115,33 @@ update all skills and docs.
       defaults are meant for an HTML-serving app and would have silently broken the client's cross-origin
       fetches). Verified live with the real cross-origin client request.
 - [x] `TWELVEDATA_KEY` added to the API's Vercel env vars (Production + Preview) and redeployed.
-- [ ] Still open — paused here to confirm direction before doing either (see chat):
-      1. zod-validate the *upstream* response shape (we validate our own query params going out, but trust
-         whatever Finnhub/Twelve Data send back). Low effort, low urgency — no injection risk, the client
-         already validates everything it receives.
-      2. Auth token in `sessionStorage` → httpOnly cookie. Real architectural change: login would need to
-         `Set-Cookie`, the client stops managing the token itself, `protect` middleware reads from
-         `req.cookies` instead of the `Authorization` header, and cross-origin cookies need
-         `SameSite=None; Secure` plus matching CORS `credentials: true` — a bigger, riskier change than
-         anything else in this phase.
-      3. Convert `API/` to TypeScript (also unlocks Prisma 7). Large, mechanical, well-defined — a full
-         file-by-file port like Phase 1's client migration.
+- [x] `API/` converted to TypeScript: `tsc` build (`dist/`, gitignored), same `strictTypeChecked` ESLint
+      rigor as the client, `@types/express` pinned to v4 to match the actual installed Express major (v5
+      types were pulled in by default and don't match v4's runtime shape). Found and fixed a real bug
+      along the way: the repo-root `.env` loader used a `__dirname`-relative path that broke once compiled
+      output moved one directory deeper into `dist/` — fixed by trying both candidate paths (dotenv
+      silently no-ops on a missing one). `vercel.json`'s `buildCommand` now runs `npm run build`; `api/
+      index.js` (still plain JS — Vercel's zero-config TS handling only covers files inside `api/` itself)
+      requires the compiled `dist/index.js`.
+- [x] Auth moved from a client-held token (`sessionStorage`, readable by any XSS) to an httpOnly cookie:
+      login sets it (`API/lib/authCookie.ts`; flags differ by environment — `SameSite=None; Secure` in
+      prod since client/API are different registrable domains, `Lax`/non-secure locally), `protect` reads
+      `req.cookies` instead of an `Authorization` header, CORS got `credentials: true` to match. The client
+      can't read an httpOnly cookie, so `AuthProvider` now determines `isAuthenticated` by calling
+      `GET /users/me` on mount (new `isLoading` on `AuthContextValue`; `RequireAuth`/`Login` wait for it).
+      **Real bug found and fixed, not just refactored**: that mount-time `/me` call's 401 for a logged-out
+      visitor shared the same global handler as a mid-session token expiry, so it force-navigated *every*
+      page (including `/register` itself) to `/login`. The mocked e2e suite didn't catch it — caught by
+      running the actual flow in a real browser against the real local API, cross-origin by port
+      (`localhost:3000` → `localhost:5001`), and watching it fail; fixed with a `skipAuthRedirect` request
+      flag (`src/lib/api.ts`) and added both a real-browser verification and a mocked regression test
+      (`visiting /register while logged out stays on /register`) that would have caught it.
+      Also added, since the TS conversion made it natural: zod validation of the *upstream* Finnhub/Twelve
+      Data response shapes (`API/lib/upstreamSchemas.ts`) — previously only our own outgoing query params
+      were validated, never what came back.
 - [ ] Pentest pass on the hardened routes; retro.
+- [ ] **Owner action:** redeploy both Vercel projects with this branch's changes (done in dev/locally and
+      verified real end-to-end; not yet pushed to the live API/client as of this writeup — see chat).
 
 ## Phase 3: Design system
 - [ ] Tokens (color, type scale, radius, spacing), light/dark themes, base components (shadcn/ui).
