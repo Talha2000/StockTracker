@@ -1,8 +1,6 @@
 import type { Request, Response } from 'express';
 import prisma from '../db';
 
-const getErrorMessage = (err: unknown): string => (err instanceof Error ? err.message : 'Unknown error');
-
 export const saveStock = async (req: Request, res: Response): Promise<Response> => {
   const userId = req.user?.id;
   const stockSymbol = (req.body as Record<string, unknown> | undefined)?.symbol;
@@ -23,7 +21,9 @@ export const saveStock = async (req: Request, res: Response): Promise<Response> 
     return res.status(200).json({ message: `Stock: ${stockSymbol} for user: ${userId} saved successfully` });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'An error occurred.', error: getErrorMessage(err) });
+    // Log server-side only — err.message can leak internals (constraint
+    // names, driver details) that are none of the caller's business.
+    return res.status(500).json({ message: 'An error occurred.' });
   }
 };
 
@@ -43,7 +43,9 @@ export const removeStock = async (req: Request, res: Response): Promise<Response
     return res.status(200).json({ message: `Stock: ${stockSymbol} for user: ${userId} removed successfully` });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'An error occurred.', error: getErrorMessage(err) });
+    // Log server-side only — err.message can leak internals (constraint
+    // names, driver details) that are none of the caller's business.
+    return res.status(500).json({ message: 'An error occurred.' });
   }
 };
 
@@ -60,6 +62,8 @@ export const getStocks = async (req: Request, res: Response): Promise<Response> 
     return res.status(200).json(stocks);
   } catch (err) {
     console.error('Error finding stocks:', err);
-    return res.status(500).json({ message: 'An error occurred.', error: getErrorMessage(err) });
+    // Log server-side only — err.message can leak internals (constraint
+    // names, driver details) that are none of the caller's business.
+    return res.status(500).json({ message: 'An error occurred.' });
   }
 };

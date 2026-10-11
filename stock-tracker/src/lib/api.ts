@@ -1,16 +1,5 @@
 import axios, { isAxiosError, type AxiosRequestConfig } from 'axios';
 import type { z } from 'zod';
-// A 401 normally means "your session expired mid-visit, go sign in again"
-// (see onUnauthorized below). The one exception is AuthProvider's mount-time
-// probe (authApi.me()) to check whether a session already exists at all — a
-// 401 there is the *expected*, normal result for a logged-out visitor on any
-// page, not an expired session, and must not trigger the same redirect (it
-// did at first: visiting /register while logged out force-navigated to
-// /login, because the probe's own 401 tripped the global handler).
-interface AuthRedirectFlag {
-  skipAuthRedirect?: boolean;
-}
-type RequestConfigWithAuthFlag = AxiosRequestConfig & AuthRedirectFlag;
 import {
   bookmarksSchema,
   candlesSchema,
@@ -21,6 +10,20 @@ import {
   quoteSchema,
   searchSchema,
 } from './schemas';
+
+// A 401 normally means "your session expired mid-visit, go sign in again"
+// (see onUnauthorized below). Two exceptions, both "expected" 401s that must
+// not trigger that redirect: AuthProvider's mount-time probe (authApi.me())
+// checking whether a session already exists at all — it did at first,
+// force-navigating every page (including /register) to /login just from
+// visiting it logged out — and a failed login attempt itself (401 is also
+// how the server now signals bad credentials, see authController.login;
+// redirecting "back to /login" from the login page itself would be a no-op
+// at best and clobber the error message at worst).
+interface AuthRedirectFlag {
+  skipAuthRedirect?: boolean;
+}
+type RequestConfigWithAuthFlag = AxiosRequestConfig & AuthRedirectFlag;
 
 // Dev uses the Vite proxy to the local API. Production has no hardcoded
 // fallback (the API's host changes with where it's deployed, e.g. Vercel's
@@ -38,7 +41,15 @@ export const API_URL: string = envApiUrl ?? '/api';
 // domains in production). There is no token for this client to hold or
 // attach itself anymore — compare to the old Authorization-header approach,
 // which kept the token readable by any injected/XSS'd page JS.
-export const http = axios.create({ baseURL: API_URL, withCredentials: true });
+// X-Requested-With on every request: a lightweight CSRF mitigation the API's
+// requireCsrfHeader middleware checks for on state-changing routes — a
+// cross-site form submission can't set a custom header, only
+// same-origin-or-CORS-permitted JS can (see API/Middleware/csrf.ts).
+export const http = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  headers: { 'X-Requested-With': 'XMLHttpRequest' },
+});
 
 let onUnauthorized: (() => void) | null = null;
 export const setUnauthorizedHandler = (handler: (() => void) | null): void => {
@@ -79,7 +90,8 @@ export const market = {
 
 export const authApi = {
   login: async (input: { username: string; password: string }) => {
-    const { data } = await http.post<unknown>('/auth/login', input);
+    const config: RequestConfigWithAuthFlag = { skipAuthRedirect: true };
+    const { data } = await http.post<unknown>('/auth/login', input, config);
     return loginResponseSchema.parse(data);
   },
   register: async (input: { username: string; password: string }) => {

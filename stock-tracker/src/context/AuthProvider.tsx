@@ -54,7 +54,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const status = isAxiosError(error) ? error.response?.status : undefined;
       return {
         ok: false,
-        error: status === 400 || status === 404 ? 'Incorrect credentials' : 'Failed to sign in',
+        // 401 is also how /users/me and an expired session report "not
+        // authenticated" — login() is the one call site where that status
+        // actually means "wrong credentials" rather than "please log in".
+        error: status === 401 ? 'Incorrect credentials' : 'Failed to sign in',
       };
     }
   }, []);

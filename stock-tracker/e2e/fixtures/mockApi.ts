@@ -41,7 +41,10 @@ export const mockApi = async (page: Page, options: { watchlist?: string[] } = {}
       loggedInAs = body.username;
       await route.fulfill(json({ username: body.username }));
     } else {
-      await route.fulfill(json('Wrong username or password!', 400));
+      // Matches the real API: login returns 401 for both a wrong password
+      // and a nonexistent username (deliberately unified to avoid username
+      // enumeration — see authController.login).
+      await route.fulfill(json('Invalid username or password.', 401));
     }
   });
   await page.route('**/api/auth/logout', async (route) => {
