@@ -20,8 +20,32 @@ export const formatMarketCap = (millions: number | undefined): string => {
 // Finnhub takes unix seconds.
 export const toUnixSeconds = (date: Date): number => Math.floor(date.getTime() / 1000);
 
-export const fromUnixSeconds = (seconds: number): string =>
-  new Date(seconds * 1000).toLocaleDateString();
+const shortDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' });
+const dateTime = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+});
+
+export const formatShortDate = (seconds: number): string => shortDate.format(seconds * 1000);
+
+export const formatDateTime = (seconds: number): string => dateTime.format(seconds * 1000);
+
+const relative = new Intl.RelativeTimeFormat('en-US', { numeric: 'auto' });
+const RELATIVE_STEPS: [Intl.RelativeTimeFormatUnit, number][] = [
+  ['day', 86_400],
+  ['hour', 3_600],
+  ['minute', 60],
+];
+
+export const formatRelativeTime = (seconds: number, now: Date = new Date()): string => {
+  const diff = seconds - now.getTime() / 1000;
+  for (const [unit, size] of RELATIVE_STEPS) {
+    if (Math.abs(diff) >= size) return relative.format(Math.round(diff / size), unit);
+  }
+  return 'just now';
+};
 
 export const toIsoDate = (date: Date): string => date.toISOString().slice(0, 10);
 

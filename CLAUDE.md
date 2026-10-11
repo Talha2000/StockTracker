@@ -38,8 +38,10 @@ comment), `ACCESS_TOKEN` (JWT secret — set on both; any local value works for 
 once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
 
 ## Structure and conventions
-- `src/lib` (api client + zod schemas, formatters), `src/hooks` (TanStack Query), `src/context`
-  (`*.ts` = context + hook, `*Provider.tsx` = component; split for react-refresh), `src/components`, `src/pages`.
+- `src/lib` (api client + zod schemas, formatters, `utils.ts` = `cn()`), `src/hooks` (TanStack Query),
+  `src/context` (`*.ts` = context + hook, `*Provider.tsx` = component; split for react-refresh),
+  `src/components` (app components), `src/components/ui` (design-system primitives), `src/pages`.
+- Routes: `/login`, `/register`, `/watchlist` (`/portfolio` redirects there), `/:symbol` (stock page).
 - Import via `@/` alias. Validate every API response with zod in `lib/api.ts`; no `any`.
 - Theme = `dark` class on `<html>`; style with Tailwind `dark:` variants, never JS ternaries on theme.
 - **TypeScript is pinned to ~6** (client and API): typescript-eslint does not support TS 7 yet. Revisit
@@ -67,10 +69,29 @@ once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
   `skipAuthRedirect` in `src/lib/api.ts`. `logout` must clear the cookie with attributes identical to how
   `login` set it, or the browser won't recognize it as the same cookie and silently keeps it.
 
-## Design direction
-Clean, modern fintech in the style of Wealthsimple: generous whitespace, calm neutral palette with a single
-accent, large confident typography, soft radii, subtle motion, green/red reserved for price movement,
-dark and light themes, mobile-first. Use the `frontend-design` skill for UI work.
+## Design system (Phase 3)
+Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `frontend-design` skill for UI work.
+- **Tokens live in `src/index.css`.** Style with the semantic names only: `bg-page`, `bg-surface`,
+  `text-ink`, `text-muted`, `border-line`, `text-accent-text`, `text-up`/`text-down` (+ `-soft` backgrounds).
+  They swap under `.dark`. Never raw hex or Tailwind palette colors (`cyan-500`…) in components.
+- **Identity:** ultramarine `bg-brand` (#2D35D8) + marigold `bg-highlight` (#FFC94A), identical in both
+  themes. Marigold appears only on ultramarine surfaces (selected chart range, focus ring, the "now" dot).
+  Green/red are for price movement only; on the blue block use the white `PriceChange tone="onBrand"` chip
+  (`text-up-ink`/`text-down-ink`), since green/red text on blue fails contrast.
+- **One bold element per screen:** the ultramarine block (`rounded-block`, class `on-brand` so focus rings
+  turn marigold) holding the huge ticker (`text-ticker`) and the white chart. Everything else stays quiet:
+  plain sections with whitespace, no grids of identical bordered cards.
+- **Type:** Schibsted Grotesk Variable (self-hosted via `@fontsource-variable`), one family. Headings
+  `font-extrabold tracking-tight`; sentence case; no all-caps labels. `tabular` utility only where numbers
+  must align in a column (its tabular figures look typewriter-like at display sizes).
+- **Radius by hierarchy:** `rounded-block` (signature block) > `rounded-panel` (lists, popovers) >
+  `rounded-field` (inputs, alerts); buttons and chips are pills.
+- **Primitives:** `src/components/ui/` (shadcn-style, `cn()` from `@/lib/utils`; `components.json` is set up
+  so `npx shadcn add <x>` drops new ones there — restyle them with the tokens before use). Button variants:
+  `primary`, `secondary`, `ghost`, `onBrand`, `onBrandGhost`; `asChild` to style a router `Link`.
+- **Motion:** only the chart's draw-in on load, plus feedback transitions. Respect reduced motion (global
+  rule in `index.css`; Recharts animation is disabled via `matchMedia` in `Chart.tsx`).
+- **Copy:** plain, active, sentence case. Errors say what happened and what to do; empty states invite action.
 
 ## Project skills (in `.claude/skills/`)
 - `e2e-testing`: Playwright test suite authoring and running.

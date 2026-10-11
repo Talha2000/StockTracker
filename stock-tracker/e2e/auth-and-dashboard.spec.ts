@@ -56,6 +56,22 @@ test('stays signed in across a reload (session cookie, not client-held token)', 
   await expect(page.getByRole('heading', { name: 'META' })).toBeVisible();
 });
 
+test('lists watched stocks on the watchlist page, including from the old /portfolio URL', async ({
+  page,
+}) => {
+  await page.goto('/login');
+  await page.getByLabel('Username').fill('alice');
+  await page.getByLabel('Password').fill('Correct1!');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await expect(page).toHaveURL(/\/META$/);
+
+  await page.goto('/portfolio');
+  await expect(page).toHaveURL(/\/watchlist$/);
+  await expect(page.getByRole('heading', { name: 'Watchlist' })).toBeVisible();
+  await page.getByRole('link', { name: /^META/ }).click();
+  await expect(page).toHaveURL(/\/META$/);
+});
+
 test('rejects invalid symbols in the URL', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Username').fill('alice');

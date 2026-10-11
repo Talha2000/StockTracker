@@ -161,11 +161,26 @@ update all skills and docs.
       https://mystocktracker.vercel.app ↔ https://stock-tracker-lake-tau.vercel.app), Twelve Data candles
       still correct, source still not exposed.
 
-**Phase 2 is done.** Next: Phase 3 (design system), starting only once explicitly asked to move on.
+**Phase 2 is done.**
 
-## Phase 3: Design system
-- [ ] Tokens (color, type scale, radius, spacing), light/dark themes, base components (shadcn/ui).
-- [ ] Web font, Storybook optional. Accessibility baseline (contrast, focus, reduced motion).
+## Phase 3: Design system [x] (branch `phase3/design-system`)
+- [x] Tokens in `src/index.css` (semantic colors swapped under `.dark`, radius by hierarchy, display type
+      sizes). Identity: ultramarine + marigold, same in both themes; green/red only for price movement.
+      All text pairs checked for WCAG AA (price colors darkened to pass on the page background).
+- [x] Base components, shadcn-style in `src/components/ui` (Button, Input, Label, Skeleton, ToggleGroup on
+      Radix) + `components.json` for the shadcn CLI. Only what the app uses; Dialog etc. come with Phase 4.
+- [x] Web font: Schibsted Grotesk Variable, self-hosted (`@fontsource-variable`, ~67 KB woff2).
+- [x] Every screen moved onto the system: the stock page leads with the ultramarine block (ticker, price,
+      change chip, white chart with day-boundary ticks), then Key facts and News; search moved into the nav;
+      auth pages share a split layout; Portfolio renamed Watchlist (it was one) with `/portfolio` redirecting.
+      Removed the BUY/SELL buttons, which did nothing. Old `Card`, `.btn-action`, `.field` styles deleted.
+- [x] Accessibility baseline: visible `:focus-visible` rings (marigold on ultramarine), reduced motion
+      (global CSS + Recharts), labelled controls, `role="status"` on loading states, sentence-case copy.
+- [x] Storybook skipped on purpose: overhead without payoff at this size; browser-verify covers it.
+- [x] Verified: lint, typecheck, unit (7), e2e (14, incl. new watchlist/redirect test), build; browser-verify
+      at 1440 and 390 in both themes; self-review findings fixed (unchecked tooltip cast, wrong-state flash).
+- [x] Retro done: stale skill entries fixed (Render/Mongo/`npm start`), lessons logged, CLAUDE.md design
+      section rewritten to describe the real system.
 
 ## Phase 4: UX
 - [ ] Dashboard: watchlist with sparklines, market overview, skeletons.

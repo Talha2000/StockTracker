@@ -90,3 +90,8 @@
   for the wrong reason; also assert the cases that should *not* redirect. Fixed with a per-request opt-out
   flag; verified with a real cross-origin (by port) browser test, then added the missing mocked regression
   test once the real gap was understood.
+- 2026-10-11: Recharts' custom tooltip `payload[].payload` is untyped; casting it is an unchecked cast. Use
+  the typed `label` (x value) and `payload[0].value` with `typeof` guards, then hover-test it in a browser,
+  since a wrong guess just hides the tooltip silently.
+- 2026-10-11: Renaming a route (`/portfolio` → `/watchlist`): keep a `<Navigate>` from the old path, or
+  bookmarks fall through to `/:symbol` and render "PORTFOLIO" as a stock.

@@ -1,34 +1,39 @@
-import { Card } from './Card';
+import { Skeleton } from './ui/skeleton';
 import { useProfile } from '@/hooks/useMarket';
 import { formatMarketCap } from '@/lib/format';
 
 export const StockInfo = ({ symbol }: { symbol: string }) => {
-  const { data, isError } = useProfile(symbol);
+  const { data, isPending, isError } = useProfile(symbol);
 
   const rows: [string, string][] = [
-    ['Name', data?.name ?? '—'],
-    ['Country', data?.country ?? '—'],
-    ['Currency', data?.currency ?? '—'],
-    ['Exchange', data?.exchange ?? '—'],
     ['Market cap', formatMarketCap(data?.marketCapitalization)],
     ['Industry', data?.finnhubIndustry ?? '—'],
+    ['Exchange', data?.exchange ?? '—'],
+    ['Country', data?.country ?? '—'],
+    ['Currency', data?.currency ?? '—'],
   ];
 
   return (
-    <Card>
-      {isError && (
-        <p role="alert" className="text-red-500">
-          Could not load company info
+    <section aria-labelledby="facts-heading">
+      <h2 id="facts-heading" className="text-2xl font-extrabold tracking-tight">
+        Key facts
+      </h2>
+      {isError ? (
+        <p role="alert" className="mt-4 text-muted">
+          Company details for {symbol} aren’t available right now.
         </p>
+      ) : (
+        <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6">
+          {rows.map(([label, value]) => (
+            <div key={label} className={label === 'Exchange' ? 'col-span-2' : undefined}>
+              <dt className="text-sm text-muted">{label}</dt>
+              <dd className="mt-1 text-lg font-semibold">
+                {isPending ? <Skeleton className="mt-1 h-6 w-24" /> : value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       )}
-      <dl className="flex h-full flex-col justify-between divide-y divide-black dark:divide-white">
-        {rows.map(([label, value]) => (
-          <div key={label} className="flex flex-1 items-center justify-between gap-4 py-2">
-            <dt className="font-medium">{label}</dt>
-            <dd className="text-right font-medium">{value}</dd>
-          </div>
-        ))}
-      </dl>
-    </Card>
+    </section>
   );
 };
