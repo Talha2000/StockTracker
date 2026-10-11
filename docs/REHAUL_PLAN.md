@@ -111,11 +111,22 @@ update all skills and docs.
       1h company profiles — tuned to how often each actually changes) and a rate limit (60 req/min/IP).
       Caveat noted in code: serverless means the cache only lives as long as one warm function instance,
       it's not shared/durable — still cuts duplicate calls in a burst for free, no extra infra.
-- [ ] Still open: zod-validate the *upstream* response shape (we validate our own query params going out,
-      but trust whatever Finnhub/Twelve Data send back); `helmet` for security headers; auth token in
-      `sessionStorage` (evaluate httpOnly cookie); convert `API/` to TypeScript (also unlocks Prisma 7).
-- [ ] Pentest pass on the hardened routes; retro.
+- [x] `helmet` added, with `crossOriginResourcePolicy: 'cross-origin'` and CSP disabled explicitly (the
+      defaults are meant for an HTML-serving app and would have silently broken the client's cross-origin
+      fetches). Verified live with the real cross-origin client request.
 - [x] `TWELVEDATA_KEY` added to the API's Vercel env vars (Production + Preview) and redeployed.
+- [ ] Still open — paused here to confirm direction before doing either (see chat):
+      1. zod-validate the *upstream* response shape (we validate our own query params going out, but trust
+         whatever Finnhub/Twelve Data send back). Low effort, low urgency — no injection risk, the client
+         already validates everything it receives.
+      2. Auth token in `sessionStorage` → httpOnly cookie. Real architectural change: login would need to
+         `Set-Cookie`, the client stops managing the token itself, `protect` middleware reads from
+         `req.cookies` instead of the `Authorization` header, and cross-origin cookies need
+         `SameSite=None; Secure` plus matching CORS `credentials: true` — a bigger, riskier change than
+         anything else in this phase.
+      3. Convert `API/` to TypeScript (also unlocks Prisma 7). Large, mechanical, well-defined — a full
+         file-by-file port like Phase 1's client migration.
+- [ ] Pentest pass on the hardened routes; retro.
 
 ## Phase 3: Design system
 - [ ] Tokens (color, type scale, radius, spacing), light/dark themes, base components (shadcn/ui).
