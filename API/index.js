@@ -8,14 +8,36 @@ dotenv.config(); // Load API/.env into process.env
 dotenv.config({ path: require('path').join(__dirname, '..', '.env') }); // Repo-root .env (FINNHUB_KEY, DATABASE_URL)
 
 const app = express()
-app.use(cors());
+
+// Was previously just cors() (any origin) followed by a manual middleware
+// that unconditionally set Access-Control-Allow-Origin: * AFTER cors() ran —
+// Express/Node replace a header on a second res.header() call for the same
+// name, so that manual line silently overwrote whatever cors() computed and
+// allowed every origin regardless of this allowlist. Removed; cors() now
+// owns the header entirely.
+const defaultAllowedOrigins = ['http://localhost:3000', 'https://mystocktracker.vercel.app'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+  : defaultAllowedOrigins;
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // No Origin header = same-origin, curl, or a server-to-server call — allow it.
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        const err = new Error(`Origin ${origin} is not allowed`);
+        err.statusCode = 403;
+        callback(err);
+      }
+    },
+  }),
+);
 
 app.use(cookieParser())
 
 app.use((req, res, next) => {
-  
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   console.log(`In router: ${req.method}:${req.originalUrl}`);
   next();
 });
