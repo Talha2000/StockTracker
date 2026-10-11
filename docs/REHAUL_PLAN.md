@@ -139,9 +139,29 @@ update all skills and docs.
       Also added, since the TS conversion made it natural: zod validation of the *upstream* Finnhub/Twelve
       Data response shapes (`API/lib/upstreamSchemas.ts`) — previously only our own outgoing query params
       were validated, never what came back.
-- [ ] Pentest pass on the hardened routes; retro.
-- [ ] **Owner action:** redeploy both Vercel projects with this branch's changes (done in dev/locally and
-      verified real end-to-end; not yet pushed to the live API/client as of this writeup — see chat).
+- [x] **Pentest pass** — a background security review of the auth-cookie-migration commit caught 3 real
+      findings, fixed same-day (full detail in `.claude/skills/pentest/LEARNINGS.md`, 2026-10-11):
+      1. CSRF: `SameSite=None` means the auth cookie rides along on a cross-*site* request regardless of
+         CORS (CORS only gates whether cross-origin JS can read the *response*). Added
+         `API/Middleware/csrf.ts`: every state-changing route now requires a custom `X-Requested-With`
+         header, which a bare cross-site form/image attack can't set.
+      2. Info disclosure: `authController`/`stockController` error responses included `err.message` —
+         could leak DB/driver internals. Now logged server-side only, generic message to the client.
+      3. Username enumeration: `login` used to return a different status for "no such user" vs "wrong
+         password". Unified to the same 401 for both. (Client fallout: its error-mapping and the
+         `skipAuthRedirect` flag both had to account for login itself now using 401, the same status the
+         global "session expired" handler watches for.)
+      Re-verified the full flow after: mocked suite, and two real-browser passes (local cross-origin,
+      production cross-site) covering register → wrong password → correct login → watchlist → logout.
+- [x] Retro done — this file and `CLAUDE.md` updated; skills' `LEARNINGS.md`/`SKILL.md` updated inline as
+      each finding landed rather than batched at the end.
+- [x] Both Vercel projects deployed with everything in this phase and verified live (not just locally):
+      TS build succeeded on Vercel, cookie auth works cross-site in production
+      (`SameSite=None; Secure`, confirmed via real browser automation against
+      https://mystocktracker.vercel.app ↔ https://stock-tracker-lake-tau.vercel.app), Twelve Data candles
+      still correct, source still not exposed.
+
+**Phase 2 is done.** Next: Phase 3 (design system), starting only once explicitly asked to move on.
 
 ## Phase 3: Design system
 - [ ] Tokens (color, type scale, radius, spacing), light/dark themes, base components (shadcn/ui).

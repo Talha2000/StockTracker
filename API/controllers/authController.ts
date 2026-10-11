@@ -25,9 +25,11 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 
     return res.status(200).json('User has been created!');
   } catch (err) {
+    // Log the real error server-side only — returning err.message to the
+    // client can leak internals (constraint names, driver/connection
+    // details) that are none of the caller's business.
     console.error(err);
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    return res.status(500).json({ message: 'An error occurred.', error: message });
+    return res.status(500).json({ message: 'An error occurred.' });
   }
 };
 
@@ -43,15 +45,22 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     return res.status(500).json({ message: 'Server misconfigured' });
   }
 
+  // Deliberately the same status + message whether the username doesn't
+  // exist or the password is wrong — distinguishing them (the original
+  // code returned 404 "User not found!" vs 400 "Wrong username or
+  // password!") lets an attacker enumerate which usernames are registered
+  // just by trying them with a throwaway password.
+  const invalidCredentials = () => res.status(401).json('Invalid username or password.');
+
   try {
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
-      return res.status(404).json('User not found!');
+      return invalidCredentials();
     }
 
     const validatePassword = await bcrypt.compare(password, user.password);
     if (!validatePassword) {
-      return res.status(400).json('Wrong username or password!');
+      return invalidCredentials();
     }
 
     const token = jwt.sign({ id: user.id, username: user.username }, secret, { expiresIn: '2h' });
