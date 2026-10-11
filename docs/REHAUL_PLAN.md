@@ -91,12 +91,31 @@ update all skills and docs.
   you're deploying — `stock-tracker` for the API, `stock-tracker-dz4a` for the client. Check which one is
   linked (`cat .vercel/project.json`, if present) before running `vercel deploy` from the repo root.
 
-### Phase 2b: API hardening — remaining
-- [ ] Convert `API/` to TypeScript (or add types + lint at minimum) — also unlocks Prisma 7.
-- [ ] Harden `/api/market/*`: zod-validate upstream, caching, rate limiting, helmet, CORS allowlist.
-- [ ] Twelve Data for candles (Finnhub `/stock/candle` is paid) behind `/api/market/candles`.
-- [ ] Remaining known issues: CORS is `*`; auth token lives in `sessionStorage` (evaluate httpOnly cookie).
-- [ ] Pentest pass on new routes; retro.
+### Phase 2b: API hardening — in progress
+- [x] Registration simplified: username/password/confirm-password only, `User.email` dropped from the
+      schema entirely (migration applied — table was empty, no data loss). Server still validates
+      username length and password length independent of the client.
+- [x] CORS locked to an allowlist (`ALLOWED_ORIGINS` env, else localhost:3000 + the prod client URL).
+      Found and fixed two real bugs while doing this, not just "add an allowlist" — full writeup in
+      `.claude/skills/pentest/LEARNINGS.md` (2026-10-11): a manual header middleware was silently
+      overriding `cors()`'s allowlist every time (so it was previously inert regardless of config), and
+      `errorHandler.js` always returned HTTP 200 for every error due to a truthy-default bug.
+      Verified live: allowed origin → 200, disallowed → 403 with no stack leak, preflight (OPTIONS)
+      works for the real client origin.
+- [x] Twelve Data wired up for `/api/market/candles` (Finnhub's own candle endpoint is paid-tier).
+      Response reshaped to the same `{ s, c, t }` shape Finnhub used, so the client's `candlesSchema` and
+      `useCandles` hook needed zero changes. Verified against the real Twelve Data API (not just the
+      client mocks): both chart resolutions (15min/1h), an invalid symbol (graceful `no_data`, not a
+      500), and an invalid resolution (400).
+- [x] Every `/api/market/*` route now has a short in-memory cache (20s quotes, 5min search/news/candles,
+      1h company profiles — tuned to how often each actually changes) and a rate limit (60 req/min/IP).
+      Caveat noted in code: serverless means the cache only lives as long as one warm function instance,
+      it's not shared/durable — still cuts duplicate calls in a burst for free, no extra infra.
+- [ ] Still open: zod-validate the *upstream* response shape (we validate our own query params going out,
+      but trust whatever Finnhub/Twelve Data send back); `helmet` for security headers; auth token in
+      `sessionStorage` (evaluate httpOnly cookie); convert `API/` to TypeScript (also unlocks Prisma 7).
+- [ ] Pentest pass on the hardened routes; retro.
+- [x] `TWELVEDATA_KEY` added to the API's Vercel env vars (Production + Preview) and redeployed.
 
 ## Phase 3: Design system
 - [ ] Tokens (color, type scale, radius, spacing), light/dark themes, base components (shadcn/ui).
