@@ -29,16 +29,32 @@ const json = (body: unknown, status = 200) => ({
 /** Mocks every /api call so tests never touch real market data or the real backend. */
 export const mockApi = async (page: Page, options: { watchlist?: string[] } = {}) => {
   const watchlist = options.watchlist ?? ['META'];
+  // Auth is a real httpOnly cookie in prod, which the browser manages for
+  // us even against a mocked route — so a plain server-side flag here is
+  // enough to fake "is there a valid session" across the mocked /login and
+  // /me endpoints, without needing to fabricate a real cookie.
+  let loggedInAs: string | null = null;
 
   await page.route('**/api/auth/login', async (route) => {
-    const body = route.request().postDataJSON() as { password?: string };
-    await route.fulfill(
-      body.password === 'Correct1!'
-        ? json({ token: 'test-token' })
-        : json('Wrong username or password!', 400),
-    );
+    const body = route.request().postDataJSON() as { username?: string; password?: string };
+    if (body.password === 'Correct1!' && body.username) {
+      loggedInAs = body.username;
+      await route.fulfill(json({ username: body.username }));
+    } else {
+      await route.fulfill(json('Wrong username or password!', 400));
+    }
   });
-  await page.route('**/api/auth/logout', (route) => route.fulfill(json('ok')));
+  await page.route('**/api/auth/logout', async (route) => {
+    loggedInAs = null;
+    await route.fulfill(json('ok'));
+  });
+  await page.route('**/api/users/me', async (route) => {
+    if (loggedInAs) {
+      await route.fulfill(json({ id: 'u1', username: loggedInAs }));
+    } else {
+      await route.fulfill(json({ message: 'Unauthorized' }, 401));
+    }
+  });
   await page.route('**/api/stock/getStocks', (route) =>
     route.fulfill(json(watchlist.map((stockSymbol) => ({ id: 'u1', stockSymbol })))),
   );
