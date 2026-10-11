@@ -15,7 +15,17 @@ Short, dated entries. Promote repeats into SKILL.md.
   button rendering "not watched" before the watchlist query resolved. When a screenshot looks wrong, log the
   element's computed style and `:focus-visible`/`:hover` state before changing CSS.
 
+- 2026-10-11: `page.addInitScript` can run before `<html>` exists (`document.documentElement` is null);
+  set root attributes from a MutationObserver fallback, and fail the spec on `pageerror` so it's noticed.
+- 2026-10-11: Screenshot right after `hover()` catches a mid-transition frame (washed-out colors). Wait
+  ~400ms after hovering before judging hover styles.
+- 2026-10-11: `flex-wrap-reverse` flips the cross axis: `items-start` pins items to the *bottom* of the
+  line. Check a wrap-reverse row at a width where it doesn't wrap, too.
+
 ## Faster ways
+- 2026-10-11: To let the owner choose between visual directions, render each option with the same
+  throwaway spec (one CSS-variable set per option behind a root attribute) and publish the screenshots as
+  one comparison page. Faster than describing colors, and they pick from real screens.
 - 2026-09-24: Fastest full check: a throwaway Playwright spec (delete after) that loops viewport x theme,
   logs console errors/warnings, `pageerror`, `requestfailed` and any request to finnhub/twelvedata, and
   saves full-page screenshots to the scratchpad. Beats driving the MCP browser click by click. Run it with

@@ -93,5 +93,11 @@
 - 2026-10-11: Recharts' custom tooltip `payload[].payload` is untyped; casting it is an unchecked cast. Use
   the typed `label` (x value) and `payload[0].value` with `typeof` guards, then hover-test it in a browser,
   since a wrong guess just hides the tooltip silently.
+- 2026-10-11: Windows PowerShell 5.1 `Get-Content -Raw | ... | Set-Content -Encoding utf8` corrupts UTF-8
+  files: it reads them as ANSI (… and curly quotes became mojibake) and writes a BOM. Never round-trip
+  source through PowerShell content cmdlets; use the Edit tool, or a small Node script for regex rewrites.
+- 2026-10-11: Showing the same value in two places (price in the rail and in the stock block) breaks
+  `getByText` strict mode in e2e. Give each region an accessible name (`aria-labelledby`) and scope the
+  assertion to it, which also documents where the value is supposed to appear.
 - 2026-10-11: Renaming a route (`/portfolio` → `/watchlist`): keep a `<Navigate>` from the old path, or
   bookmarks fall through to `/:symbol` and render "PORTFOLIO" as a stock.

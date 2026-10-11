@@ -52,7 +52,7 @@ export const Search = () => {
             type="button"
             onClick={clear}
             aria-label="Clear search"
-            className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-muted hover:bg-ink/5 hover:text-ink dark:hover:bg-white/10"
+            className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-muted hover:bg-ink/6 hover:text-ink"
           >
             <X aria-hidden="true" className="size-4" />
           </button>
@@ -60,7 +60,7 @@ export const Search = () => {
       </form>
 
       {(isFetching || isError || noMatches || results.length > 0) && (
-        <div className="absolute inset-x-0 top-12 z-40 overflow-hidden rounded-panel bg-surface shadow-[0_12px_40px_-12px_rgb(21_24_48/0.35)] ring-1 ring-line">
+        <div className="absolute inset-x-0 top-12 z-40 overflow-hidden rounded-panel bg-page shadow-[0_12px_40px_-12px_rgb(0_0_0/0.3)] ring-1 ring-line">
           {isFetching && <p className="px-4 py-3 text-sm text-muted">Searching…</p>}
           {isError && (
             <p role="alert" className="px-4 py-3 text-sm text-down">
@@ -79,7 +79,7 @@ export const Search = () => {
                     onClick={() => {
                       select(item.symbol);
                     }}
-                    className="flex w-full cursor-pointer items-baseline gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-ink/5 dark:hover:bg-white/8"
+                    className="flex w-full cursor-pointer items-baseline gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-ink/6"
                   >
                     <span className="w-20 shrink-0 font-bold">{item.displaySymbol}</span>
                     <span className="truncate text-sm text-muted">{item.description}</span>

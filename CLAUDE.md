@@ -72,15 +72,23 @@ once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
 ## Design system (Phase 3)
 Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `frontend-design` skill for UI work.
 - **Tokens live in `src/index.css`.** Style with the semantic names only: `bg-page`, `bg-surface`,
-  `text-ink`, `text-muted`, `border-line`, `text-accent-text`, `text-up`/`text-down` (+ `-soft` backgrounds).
+  `text-ink`, `text-muted`, `border-line`, `bg-primary`/`text-on-primary`, `text-up`/`text-down`
+  (+ `-soft` backgrounds), and for the signature block `bg-block`/`text-on-block`/`text-on-block-muted`.
   They swap under `.dark`. Never raw hex or Tailwind palette colors (`cyan-500`…) in components.
-- **Identity:** ultramarine `bg-brand` (#2D35D8) + marigold `bg-highlight` (#FFC94A), identical in both
-  themes. Marigold appears only on ultramarine surfaces (selected chart range, focus ring, the "now" dot).
-  Green/red are for price movement only; on the blue block use the white `PriceChange tone="onBrand"` chip
-  (`text-up-ink`/`text-down-ink`), since green/red text on blue fails contrast.
-- **One bold element per screen:** the ultramarine block (`rounded-block`, class `on-brand` so focus rings
-  turn marigold) holding the huge ticker (`text-ticker`) and the white chart. Everything else stays quiet:
-  plain sections with whitespace, no grids of identical bordered cards.
+- **Palette (chosen 2026-10-11 from five options):** black and white, plus one accent, marigold
+  (`bg-highlight`/`bg-mark`, #FFC94A, same in both themes). Marigold marks only "where you are / what's
+  selected": the selected chart range, the hovered chart point, the current stock in the rail, the logo.
+  It never colors text on white (fails contrast); links and focus rings are ink. Green/red are for price
+  movement only; on the block use the `PriceChange tone="onBlock"` chip (`text-up-ink`/`text-down-ink`).
+- **The block inverts with the theme:** black on the white page, white on the black page. Anything drawn on
+  it uses `on-block` colors, and the chart uses `currentColor` (SVG attributes can't read CSS variables;
+  `.chart-dot` in `index.css` colors the marigold point via CSS instead). Wrap it in `on-block` so focus
+  rings switch to `block-ring`.
+- **Layout is full width**, not a centered column: pages pad `px-4 sm:px-6 lg:px-10` and use the space.
+  Stock pages have a sticky "Your list" rail on the left (`WatchlistRail`; a swipeable strip under `lg`).
+- **One bold element per screen:** the block with the huge ticker (`text-ticker`) and an edge-to-edge,
+  axis-free chart. Everything else stays quiet: thick `border-ink` rules over Key facts and the Watchlist,
+  plain lists, no grids of identical bordered cards. The Watchlist row's hover inverts to ink.
 - **Type:** Schibsted Grotesk Variable (self-hosted via `@fontsource-variable`), one family. Headings
   `font-extrabold tracking-tight`; sentence case; no all-caps labels. `tabular` utility only where numbers
   must align in a column (its tabular figures look typewriter-like at display sizes).
@@ -88,7 +96,7 @@ Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `
   `rounded-field` (inputs, alerts); buttons and chips are pills.
 - **Primitives:** `src/components/ui/` (shadcn-style, `cn()` from `@/lib/utils`; `components.json` is set up
   so `npx shadcn add <x>` drops new ones there — restyle them with the tokens before use). Button variants:
-  `primary`, `secondary`, `ghost`, `onBrand`, `onBrandGhost`; `asChild` to style a router `Link`.
+  `primary`, `secondary`, `ghost`, `onBlock`, `onBlockGhost`; `asChild` to style a router `Link`.
 - **Motion:** only the chart's draw-in on load, plus feedback transitions. Respect reduced motion (global
   rule in `index.css`; Recharts animation is disabled via `matchMedia` in `Chart.tsx`).
 - **Copy:** plain, active, sentence case. Errors say what happened and what to do; empty states invite action.

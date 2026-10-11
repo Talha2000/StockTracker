@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import { CompanyNews } from '@/components/CompanyNews';
 import { Overview } from '@/components/Overview';
 import { StockInfo } from '@/components/StockInfo';
+import { WatchlistRail } from '@/components/WatchlistRail';
 import { isValidSymbol } from '@/lib/format';
 
 // Recharts is the heaviest dependency; load it only when a chart is shown.
@@ -11,34 +12,39 @@ const Chart = lazy(() => import('@/components/Chart').then((m) => ({ default: m.
 export const Dashboard = () => {
   const { symbol } = useParams();
 
-  if (!isValidSymbol(symbol)) {
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <p role="alert" className="text-2xl font-bold">
-          That is not a valid stock symbol.
-        </p>
-        <p className="mt-2 text-muted">Search for a company or symbol at the top of the page.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
-      <section className="on-brand rounded-block bg-brand p-6 text-white sm:p-10">
-        <Overview symbol={symbol} />
-        {/* Same height as the chart, so the block doesn't jump when Recharts arrives. */}
-        <Suspense fallback={<div className="mt-8 h-56 sm:h-72" />}>
-          <Chart symbol={symbol} />
-        </Suspense>
-      </section>
+    <div className="lg:flex">
+      <WatchlistRail />
 
-      <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div className="lg:col-span-5">
-          <StockInfo symbol={symbol} />
-        </div>
-        <div className="lg:col-span-7">
-          <CompanyNews symbol={symbol} />
-        </div>
+      <div className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
+        {isValidSymbol(symbol) ? (
+          <>
+            <section
+              aria-labelledby="ticker-heading"
+              className="on-block overflow-hidden rounded-block bg-block text-on-block"
+            >
+              <Overview symbol={symbol} />
+              {/* Same height as the chart + range toggle, so the block doesn't jump when Recharts arrives. */}
+              <Suspense fallback={<div className="h-90 sm:h-108 xl:h-124" />}>
+                <Chart symbol={symbol} />
+              </Suspense>
+            </section>
+
+            <div className="mt-14 space-y-16">
+              <StockInfo symbol={symbol} />
+              <CompanyNews symbol={symbol} />
+            </div>
+          </>
+        ) : (
+          <div className="py-10">
+            <p role="alert" className="text-3xl font-extrabold tracking-tight">
+              That is not a valid stock symbol.
+            </p>
+            <p className="mt-2 text-muted">
+              Search for a company or symbol at the top of the page.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

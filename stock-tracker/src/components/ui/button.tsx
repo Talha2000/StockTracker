@@ -8,12 +8,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-brand text-white hover:bg-brand-strong',
-        secondary: 'bg-surface text-ink ring-1 ring-line ring-inset hover:ring-muted',
-        ghost: 'text-ink hover:bg-ink/5 dark:hover:bg-white/8',
-        // For use on the ultramarine block, where primary would vanish.
-        onBrand: 'bg-white text-brand hover:bg-brand-soft',
-        onBrandGhost: 'text-white ring-1 ring-white/40 ring-inset hover:bg-white/10',
+        primary: 'bg-primary text-on-primary hover:bg-primary/85',
+        secondary: 'bg-page text-ink ring-1 ring-line ring-inset hover:ring-ink',
+        ghost: 'text-ink hover:bg-ink/6',
+        // For use on the block, where primary could vanish into the background.
+        onBlock: 'bg-on-block text-block hover:bg-on-block/85',
+        onBlockGhost: 'text-on-block ring-1 ring-on-block/40 ring-inset hover:bg-on-block/10',
       },
       size: {
         sm: 'h-9 px-4 text-sm',

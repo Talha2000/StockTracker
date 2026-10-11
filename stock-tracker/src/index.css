@@ -4,37 +4,61 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Design tokens. Components reference the semantic names (bg-page, text-ink,
- * bg-brand…) — never raw hex — so a theme is just a different set of values.
- * Ultramarine (brand) and marigold (highlight) are identical in both themes:
- * they're the identity. Up/down are reserved for price movement only.
+ * Design tokens. Components use the semantic names (bg-page, text-ink, bg-block…),
+ * never raw hex, so a theme or palette is just a different set of values.
+ *
+ * Black and white, plus one accent: marigold. The signature "block" inverts with the
+ * theme (black on a white page, white on a black page); marigold is the same in both.
+ * Up/down are reserved for price movement only.
  */
 :root {
-  --page: #edeff4;
-  --surface: #ffffff;
-  --ink: #151830;
-  --muted: #5b6080;
-  --line: #d9dce6;
-  --accent-text: #2d35d8;
-  --ring: #2d35d8;
+  --page: #ffffff;
+  --surface: #f4f4f4;
+  --ink: #000000;
+  --muted: #6b6b6b;
+  --line: #e4e4e4;
   --up: #087a4b;
   --down: #c02a3e;
   --up-soft: #dff3e9;
   --down-soft: #fbe3e6;
+
+  --block: #000000;
+  --on-block: #ffffff;
+  --on-block-muted: #a3a3a3;
+  --block-chip: #ffffff;
+
+  /* Marigold: selected chart range, hovered chart point, current stock in the rail, logo. */
+  --highlight: #ffc94a;
+  --on-highlight: #000000;
+  --mark: #ffc94a;
+  --accent-text: #000000;
+  --ring: #000000;
+  --block-ring: #ffffff;
+  --primary: #000000;
+  --on-primary: #ffffff;
 }
 
 .dark {
-  --page: #10132a;
-  --surface: #181c38;
-  --ink: #e9ebf7;
-  --muted: #9aa0c3;
-  --line: #2a2f55;
-  --accent-text: #9ea6ff;
-  --ring: #9ea6ff;
+  --page: #000000;
+  --surface: #161616;
+  --ink: #ffffff;
+  --muted: #a3a3a3;
+  --line: #2a2a2a;
   --up: #5bd69b;
   --down: #ff7a8a;
   --up-soft: rgb(91 214 155 / 0.14);
   --down-soft: rgb(255 122 138 / 0.14);
+
+  --block: #ffffff;
+  --on-block: #000000;
+  --on-block-muted: #5c5c5c;
+  --block-chip: #eeeeee;
+
+  --accent-text: #ffffff;
+  --ring: #ffffff;
+  --block-ring: #000000;
+  --primary: #ffffff;
+  --on-primary: #000000;
 }
 
 @theme inline {
@@ -43,20 +67,26 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
-  --color-accent-text: var(--accent-text);
-  --color-ring: var(--ring);
   --color-up: var(--up);
   --color-down: var(--down);
   --color-up-soft: var(--up-soft);
   --color-down-soft: var(--down-soft);
+  --color-block: var(--block);
+  --color-on-block: var(--on-block);
+  --color-on-block-muted: var(--on-block-muted);
+  --color-block-chip: var(--block-chip);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-mark: var(--mark);
+  --color-accent-text: var(--accent-text);
+  --color-ring: var(--ring);
+  --color-block-ring: var(--block-ring);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
 }
 
 @theme {
-  --color-brand: #2d35d8;
-  --color-brand-strong: #2128b0;
-  --color-brand-soft: #c7cbff;
-  --color-highlight: #ffc94a;
-  /* Price colors for the white chip on the ultramarine block, same in both themes. */
+  /* Price colors for the chip on the block: always on a light chip, so always the dark variants. */
   --color-up-ink: #087a4b;
   --color-down-ink: #c02a3e;
 
@@ -68,12 +98,12 @@
   --radius-field: 0.875rem;
 
   /* Display sizes for tickers and prices; body steps use Tailwind's defaults. */
-  --text-ticker: clamp(3.5rem, 11vw, 7.5rem);
-  --text-ticker--line-height: 0.9;
-  --text-ticker--letter-spacing: -0.045em;
-  --text-price: clamp(2rem, 5vw, 3rem);
+  --text-ticker: clamp(3.75rem, 10vw, 9rem);
+  --text-ticker--line-height: 0.85;
+  --text-ticker--letter-spacing: -0.05em;
+  --text-price: clamp(2.25rem, 4.5vw, 3.5rem);
   --text-price--line-height: 1;
-  --text-price--letter-spacing: -0.03em;
+  --text-price--letter-spacing: -0.035em;
 }
 
 @layer base {
@@ -87,16 +117,22 @@
   }
 
   ::selection {
-    @apply bg-highlight text-[#151830];
+    @apply bg-ink text-page;
   }
 
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }
 
-  /* On ultramarine, the default focus ring would disappear into the background. */
-  .on-brand :focus-visible {
-    @apply outline-highlight;
+  /* On the block, the page's focus ring would disappear into the background. */
+  .on-block :focus-visible {
+    @apply outline-block-ring;
+  }
+
+  /* Recharts takes colors as SVG attributes, which can't read CSS variables; CSS can. */
+  .chart-dot {
+    fill: var(--highlight);
+    stroke: var(--on-block);
   }
 
   @media (prefers-reduced-motion: reduce) {

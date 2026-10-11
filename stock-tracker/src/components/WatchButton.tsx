@@ -12,7 +12,7 @@ export const WatchButton = ({ symbol }: { symbol: string }) => {
       <Button
         // Hidden (space kept) until the watchlist loads, so it never flashes "Watch" for a watched stock.
         className={watchlist ? undefined : 'invisible'}
-        variant={watched ? 'onBrandGhost' : 'onBrand'}
+        variant={watched ? 'onBlockGhost' : 'onBlock'}
         disabled={toggle.isPending}
         aria-label={watched ? `Remove ${symbol} from watchlist` : `Add ${symbol} to watchlist`}
         onClick={() => {
@@ -23,7 +23,7 @@ export const WatchButton = ({ symbol }: { symbol: string }) => {
         {watched ? 'Watching' : 'Watch'}
       </Button>
       {toggle.isError && (
-        <p role="alert" className="text-sm text-white">
+        <p role="alert" className="text-sm text-on-block">
           Couldn’t update your watchlist. Try again.
         </p>
       )}

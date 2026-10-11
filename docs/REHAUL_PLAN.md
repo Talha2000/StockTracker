@@ -165,14 +165,18 @@ update all skills and docs.
 
 ## Phase 3: Design system [x] (branch `phase3/design-system`)
 - [x] Tokens in `src/index.css` (semantic colors swapped under `.dark`, radius by hierarchy, display type
-      sizes). Identity: ultramarine + marigold, same in both themes; green/red only for price movement.
+      sizes). First pass was ultramarine + marigold; after review the owner asked for a black/white,
+      Wealthsimple-like base and picked black + marigold from five rendered options (2026-10-11). The block
+      inverts with the theme; marigold is the one accent. Green/red only for price movement.
       All text pairs checked for WCAG AA (price colors darkened to pass on the page background).
 - [x] Base components, shadcn-style in `src/components/ui` (Button, Input, Label, Skeleton, ToggleGroup on
       Radix) + `components.json` for the shadcn CLI. Only what the app uses; Dialog etc. come with Phase 4.
 - [x] Web font: Schibsted Grotesk Variable, self-hosted (`@fontsource-variable`, ~67 KB woff2).
-- [x] Every screen moved onto the system: the stock page leads with the ultramarine block (ticker, price,
-      change chip, white chart with day-boundary ticks), then Key facts and News; search moved into the nav;
-      auth pages share a split layout; Portfolio renamed Watchlist (it was one) with `/portfolio` redirecting.
+- [x] Every screen moved onto the system, full width (no centered column): stock pages get a sticky
+      "Your list" rail (strip on mobile), then the block (huge ticker, price, change chip, day range,
+      edge-to-edge axis-free chart), a Key facts strip and News with a lead story; search moved into the
+      nav; auth pages are a full-bleed split; Portfolio renamed Watchlist (it was one), now big ticker rows
+      that invert on hover, with `/portfolio` redirecting.
       Removed the BUY/SELL buttons, which did nothing. Old `Card`, `.btn-action`, `.field` styles deleted.
 - [x] Accessibility baseline: visible `:focus-visible` rings (marigold on ultramarine), reduced motion
       (global CSS + Recharts), labelled controls, `role="status"` on loading states, sentence-case copy.

@@ -21,13 +21,13 @@ export const NavBar = () => {
     <header className="sticky top-0 z-30 border-b border-line bg-page">
       <nav
         aria-label="Main"
-        className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6"
+        className="flex flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:py-0 lg:px-10"
       >
         <Link
           to={isAuthenticated ? `/${watchlist?.[0] ?? 'META'}` : '/login'}
           className="flex items-center gap-2 rounded-md text-lg font-extrabold tracking-tight"
         >
-          <span aria-hidden="true" className="size-3.5 rounded-[5px] bg-brand" />
+          <span aria-hidden="true" className="size-3.5 rounded-[5px] bg-mark ring-1 ring-ink/15" />
           Stocktracker
         </Link>
 
@@ -37,7 +37,7 @@ export const NavBar = () => {
             className={({ isActive }) =>
               cn(
                 'rounded-md text-sm font-semibold text-muted hover:text-ink',
-                isActive && 'text-ink underline decoration-brand decoration-2 underline-offset-8',
+                isActive && 'text-ink underline decoration-2 underline-offset-8',
               )
             }
           >
@@ -46,7 +46,7 @@ export const NavBar = () => {
         )}
 
         {isAuthenticated && (
-          <div className="order-last w-full md:order-0 md:w-80">
+          <div className="order-last w-full md:order-0 md:w-80 xl:w-96">
             <Search />
           </div>
         )}

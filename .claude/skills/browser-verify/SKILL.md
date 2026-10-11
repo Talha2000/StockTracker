@@ -12,7 +12,7 @@ Goal: prove the change works by using the app, not by reading code.
 2. Start the dev servers if not running (client via `npm run dev` in `stock-tracker/`, API via
    `npm run devStart` in `API/` only when the real API is needed). Use background runs; wait for the port
    instead of sleeping blindly.
-3. For a visual/design change, check the design tokens are used (`bg-page`, `text-ink`, `bg-brand`…, see
+3. For a visual/design change, check the design tokens are used (`bg-page`, `text-ink`, `bg-block`…, see
    `src/index.css`), not raw hex or Tailwind palette colors, and that both themes and 390px width hold up.
 
 ## Preferred method

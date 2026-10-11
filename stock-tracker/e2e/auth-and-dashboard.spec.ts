@@ -36,13 +36,20 @@ test('signs in and shows the stock dashboard', async ({ page }) => {
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(/\/META$/);
-  await expect(page.getByRole('heading', { name: 'META' })).toBeVisible();
-  await expect(page.getByText('$512.34')).toBeVisible();
-  await expect(page.getByText('Meta Platforms Inc')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Remove META from watchlist' })).toBeVisible();
+  // The price also shows in the watchlist rail, so assert inside the stock's own block.
+  const stock = page.getByRole('region', { name: 'META' });
+  await expect(stock.getByRole('heading', { name: 'META' })).toBeVisible();
+  await expect(stock.getByText('$512.34')).toBeVisible();
+  await expect(stock.getByText('Meta Platforms Inc')).toBeVisible();
+  await expect(stock.getByRole('button', { name: 'Remove META from watchlist' })).toBeVisible();
+  await expect(
+    page.getByRole('navigation', { name: 'Your watchlist' }).getByRole('link', { name: /META/ }),
+  ).toHaveAttribute('aria-current', 'page');
 });
 
-test('stays signed in across a reload (session cookie, not client-held token)', async ({ page }) => {
+test('stays signed in across a reload (session cookie, not client-held token)', async ({
+  page,
+}) => {
   await page.goto('/login');
   await page.getByLabel('Username').fill('alice');
   await page.getByLabel('Password').fill('Correct1!');
