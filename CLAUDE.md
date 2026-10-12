@@ -89,7 +89,7 @@ Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `
 - **Condensed (owner feedback 2026-10-11: "more condensed and cleaner, images too large"):** the block is
   the only large element (ticker `text-ticker`, max 4rem; edge-to-edge, axis-free chart, max 15rem tall).
   Everything else is dense and quiet: section headings `text-lg`, body `text-sm`, hairline `border-line`
-  rows, news thumbnails 56px (no hero images), Key facts as a label/value list beside the news on `xl`.
+  rows, news thumbnails 56px (no hero images), Key facts as a label/value list in the left column beside the news on `xl` (owner's choice).
   No grids of identical bordered cards. Don't scale things back up without asking.
 - **Type:** Schibsted Grotesk Variable (self-hosted via `@fontsource-variable`), one family. Headings
   `font-extrabold tracking-tight`; sentence case; no all-caps labels. `tabular` utility only where numbers
