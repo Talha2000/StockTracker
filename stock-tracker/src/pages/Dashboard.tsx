@@ -16,7 +16,7 @@ export const Dashboard = () => {
     <div className="lg:flex">
       <WatchlistRail />
 
-      <div className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
+      <div className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
         {isValidSymbol(symbol) ? (
           <>
             <section
@@ -25,19 +25,22 @@ export const Dashboard = () => {
             >
               <Overview symbol={symbol} />
               {/* Same height as the chart + range toggle, so the block doesn't jump when Recharts arrives. */}
-              <Suspense fallback={<div className="h-90 sm:h-108 xl:h-124" />}>
+              <Suspense fallback={<div className="h-62 sm:h-71 xl:h-79" />}>
                 <Chart symbol={symbol} />
               </Suspense>
             </section>
 
-            <div className="mt-14 space-y-16">
-              <StockInfo symbol={symbol} />
+            {/* Key facts sit beside the news on wide screens, above it on narrow ones. */}
+            <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1fr)_18rem] xl:gap-12">
+              <div className="xl:col-start-2 xl:row-start-1">
+                <StockInfo symbol={symbol} />
+              </div>
               <CompanyNews symbol={symbol} />
             </div>
           </>
         ) : (
           <div className="py-10">
-            <p role="alert" className="text-3xl font-extrabold tracking-tight">
+            <p role="alert" className="text-2xl font-extrabold tracking-tight">
               That is not a valid stock symbol.
             </p>
             <p className="mt-2 text-muted">

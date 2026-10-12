@@ -37,16 +37,16 @@ export const Chart = ({ symbol }: { symbol: string }) => {
   const points = data ?? [];
 
   return (
-    <div className="mt-6">
-      <div className="h-64 text-on-block sm:h-80 xl:h-96">
+    <div className="mt-4">
+      <div className="h-44 text-on-block sm:h-52 xl:h-60">
         {isPending && <Spinner label="Loading chart" className="h-full" />}
         {isError && (
-          <p role="alert" className="flex h-full items-center px-6 text-on-block-muted sm:px-10">
+          <p role="alert" className="flex h-full items-center px-5 text-on-block-muted sm:px-7">
             Price history isn’t available right now.
           </p>
         )}
         {!isPending && !isError && points.length === 0 && (
-          <p className="flex h-full items-center px-6 text-on-block-muted sm:px-10">
+          <p className="flex h-full items-center px-5 text-on-block-muted sm:px-7">
             No trading data for this range.
           </p>
         )}
@@ -81,7 +81,7 @@ export const Chart = ({ symbol }: { symbol: string }) => {
         )}
       </div>
 
-      <div className="px-6 pt-4 pb-6 sm:px-10 sm:pb-8">
+      <div className="px-5 pt-3 pb-4 sm:px-7 sm:pb-5">
         <ToggleGroup
           type="single"
           aria-label="Chart range"

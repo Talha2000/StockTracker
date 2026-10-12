@@ -24,7 +24,7 @@ export const PriceChange = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-semibold',
+        'inline-flex items-center gap-1 rounded-full whitespace-nowrap px-2.5 py-1 text-sm font-semibold',
         tone === 'onBlock' && ['bg-block-chip', up ? 'text-up-ink' : 'text-down-ink'],
         tone === 'text' && ['px-0 py-0', up ? 'text-up' : 'text-down'],
         tone === 'soft' && (up ? 'bg-up-soft text-up' : 'bg-down-soft text-down'),

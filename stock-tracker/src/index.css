@@ -93,17 +93,17 @@
   --font-sans: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
 
   /* Radius follows hierarchy: the signature block is the softest, controls are pills. */
-  --radius-block: 1.75rem;
-  --radius-panel: 1.25rem;
+  --radius-block: 1.25rem;
+  --radius-panel: 1rem;
   --radius-field: 0.875rem;
 
   /* Display sizes for tickers and prices; body steps use Tailwind's defaults. */
-  --text-ticker: clamp(3.75rem, 10vw, 9rem);
-  --text-ticker--line-height: 0.85;
-  --text-ticker--letter-spacing: -0.05em;
-  --text-price: clamp(2.25rem, 4.5vw, 3.5rem);
+  --text-ticker: clamp(2.5rem, 5vw, 4rem);
+  --text-ticker--line-height: 0.9;
+  --text-ticker--letter-spacing: -0.04em;
+  --text-price: clamp(1.75rem, 3vw, 2.25rem);
   --text-price--line-height: 1;
-  --text-price--letter-spacing: -0.035em;
+  --text-price--letter-spacing: -0.03em;
 }
 
 @layer base {

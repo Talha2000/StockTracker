@@ -17,19 +17,19 @@ const DecorativeLine = () => (
 /** Full-bleed split: the block on the left half, the form on the right. */
 export const AuthLayout = ({ children }: { children: ReactNode }) => (
   <div className="grid md:min-h-[calc(100dvh-4rem)] lg:grid-cols-2">
-    <aside className="on-block hidden flex-col justify-between gap-16 bg-block p-12 text-on-block lg:flex xl:p-16">
-      <p className="text-7xl leading-[0.9] font-extrabold tracking-tighter xl:text-8xl">
+    <aside className="on-block hidden flex-col justify-between gap-12 bg-block p-10 text-on-block lg:flex xl:p-12">
+      <p className="max-w-lg text-5xl leading-[0.95] font-extrabold tracking-tight">
         Your stocks, without the noise.
       </p>
-      <div>
+      <div className="max-w-md">
         <DecorativeLine />
-        <p className="mt-10 max-w-md text-lg text-on-block-muted">
+        <p className="mt-6 text-on-block-muted">
           Follow the companies you care about, see how they moved today and read what’s moving them.
         </p>
       </div>
     </aside>
-    <div className="flex items-center px-4 py-12 sm:px-6 lg:px-16 xl:px-24">
-      <div className="w-full max-w-md">{children}</div>
+    <div className="flex items-center px-4 py-10 sm:px-6 lg:px-12 xl:px-20">
+      <div className="w-full max-w-sm">{children}</div>
     </div>
   </div>
 );

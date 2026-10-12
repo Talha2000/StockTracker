@@ -33,13 +33,13 @@ export const Login = () => {
 
   return (
     <AuthLayout>
-      <h1 className="text-4xl font-extrabold tracking-tight">Sign in to your account</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Sign in to your account</h1>
 
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
-        className="mt-8 flex flex-col gap-5"
+        className="mt-6 flex flex-col gap-4"
       >
         <div className="flex flex-col gap-2">
           <Label htmlFor="username">Username</Label>
@@ -76,7 +76,7 @@ export const Login = () => {
           </p>
         )}
 
-        <Button type="submit" size="lg" disabled={loading} className="mt-2 w-full">
+        <Button type="submit" disabled={loading} className="mt-2 w-full">
           {loading ? 'Signing in…' : 'Sign in'}
         </Button>
       </form>

@@ -173,10 +173,11 @@ update all skills and docs.
       Radix) + `components.json` for the shadcn CLI. Only what the app uses; Dialog etc. come with Phase 4.
 - [x] Web font: Schibsted Grotesk Variable, self-hosted (`@fontsource-variable`, ~67 KB woff2).
 - [x] Every screen moved onto the system, full width (no centered column): stock pages get a sticky
-      "Your list" rail (strip on mobile), then the block (huge ticker, price, change chip, day range,
-      edge-to-edge axis-free chart), a Key facts strip and News with a lead story; search moved into the
-      nav; auth pages are a full-bleed split; Portfolio renamed Watchlist (it was one), now big ticker rows
-      that invert on hover, with `/portfolio` redirecting.
+      "Your list" rail (strip on mobile), then the block (ticker, price, change chip, day range,
+      edge-to-edge axis-free chart), then News (compact two-column list, small thumbnails) with Key facts
+      beside it; search moved into the nav; auth pages are a full-bleed split; Portfolio renamed Watchlist
+      (it was one), compact rows, with `/portfolio` redirecting. A third pass condensed everything after
+      owner feedback (smaller type and images, tighter spacing).
       Removed the BUY/SELL buttons, which did nothing. Old `Card`, `.btn-action`, `.field` styles deleted.
 - [x] Accessibility baseline: visible `:focus-visible` rings (marigold on ultramarine), reduced motion
       (global CSS + Recharts), labelled controls, `role="status"` on loading states, sentence-case copy.

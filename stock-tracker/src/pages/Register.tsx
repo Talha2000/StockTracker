@@ -55,14 +55,14 @@ export const Register = () => {
 
   return (
     <AuthLayout>
-      <h1 className="text-4xl font-extrabold tracking-tight">Sign up</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Sign up</h1>
 
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
         noValidate
-        className="mt-8 flex flex-col gap-5"
+        className="mt-6 flex flex-col gap-4"
       >
         <div className="flex flex-col gap-2">
           <Label htmlFor="username">Username</Label>
@@ -116,7 +116,7 @@ export const Register = () => {
           </p>
         )}
 
-        <Button type="submit" size="lg" disabled={loading} className="mt-2 w-full">
+        <Button type="submit" disabled={loading} className="mt-2 w-full">
           {loading ? 'Creating account…' : 'Create account'}
         </Button>
       </form>

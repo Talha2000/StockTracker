@@ -18,7 +18,7 @@ export const ToggleGroupItem = ({
 }: ComponentProps<typeof ToggleGroupPrimitive.Item>) => (
   <ToggleGroupPrimitive.Item
     className={cn(
-      'h-8 min-w-12 cursor-pointer rounded-full px-3 text-sm font-semibold transition-colors',
+      'h-7 min-w-11 cursor-pointer rounded-full px-3 text-xs font-semibold transition-colors',
       className,
     )}
     {...props}

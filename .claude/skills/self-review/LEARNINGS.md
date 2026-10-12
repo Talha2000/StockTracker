@@ -96,6 +96,9 @@
 - 2026-10-11: Windows PowerShell 5.1 `Get-Content -Raw | ... | Set-Content -Encoding utf8` corrupts UTF-8
   files: it reads them as ANSI (… and curly quotes became mojibake) and writes a BOM. Never round-trip
   source through PowerShell content cmdlets; use the Edit tool, or a small Node script for regex rewrites.
+  Windows PowerShell 5.1 also strips embedded double quotes from arguments passed to native programs
+  (`node x.cjs 'size="lg"'` arrives as `size=lg`; a `git commit -m` here-string containing `"..."` gets
+  split into pathspecs). Keep `"` out of native-command arguments, or use the Edit tool.
 - 2026-10-11: Showing the same value in two places (price in the rail and in the stock block) breaks
   `getByText` strict mode in e2e. Give each region an accessible name (`aria-labelledby`) and scope the
   assertion to it, which also documents where the value is supposed to appear.

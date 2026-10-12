@@ -86,9 +86,11 @@ Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `
   rings switch to `block-ring`.
 - **Layout is full width**, not a centered column: pages pad `px-4 sm:px-6 lg:px-10` and use the space.
   Stock pages have a sticky "Your list" rail on the left (`WatchlistRail`; a swipeable strip under `lg`).
-- **One bold element per screen:** the block with the huge ticker (`text-ticker`) and an edge-to-edge,
-  axis-free chart. Everything else stays quiet: thick `border-ink` rules over Key facts and the Watchlist,
-  plain lists, no grids of identical bordered cards. The Watchlist row's hover inverts to ink.
+- **Condensed (owner feedback 2026-10-11: "more condensed and cleaner, images too large"):** the block is
+  the only large element (ticker `text-ticker`, max 4rem; edge-to-edge, axis-free chart, max 15rem tall).
+  Everything else is dense and quiet: section headings `text-lg`, body `text-sm`, hairline `border-line`
+  rows, news thumbnails 56px (no hero images), Key facts as a label/value list beside the news on `xl`.
+  No grids of identical bordered cards. Don't scale things back up without asking.
 - **Type:** Schibsted Grotesk Variable (self-hosted via `@fontsource-variable`), one family. Headings
   `font-extrabold tracking-tight`; sentence case; no all-caps labels. `tabular` utility only where numbers
   must align in a column (its tabular figures look typewriter-like at display sizes).

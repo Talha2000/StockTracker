@@ -11,21 +11,21 @@ export const Watchlist = () => {
   const profiles = useProfiles(symbols);
 
   return (
-    <div className="px-4 py-10 sm:px-6 lg:px-10 lg:py-14">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="text-6xl font-extrabold tracking-tighter sm:text-8xl">Watchlist</h1>
+    <div className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
+        <h1 className="text-3xl font-extrabold tracking-tight">Watchlist</h1>
         {symbols.length > 0 && (
-          <p className="pb-2 text-muted">
+          <p className="text-sm text-muted">
             {symbols.length} {symbols.length === 1 ? 'stock' : 'stocks'}
           </p>
         )}
       </div>
 
       {isPending && (
-        <div role="status" className="mt-10 space-y-3">
+        <div role="status" className="mt-6 space-y-2">
           <span className="sr-only">Loading your watchlist…</span>
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
         </div>
       )}
       {isError && (
@@ -34,33 +34,30 @@ export const Watchlist = () => {
         </p>
       )}
       {!isPending && !isError && symbols.length === 0 && (
-        <div className="mt-10 border-t-2 border-ink pt-6">
-          <p className="text-2xl font-bold tracking-tight">Nothing on your watchlist yet.</p>
-          <p className="mt-1 text-muted">Search for a stock, then select Watch to keep it here.</p>
+        <div className="mt-6 border-t border-line pt-4">
+          <p className="font-semibold">Nothing on your watchlist yet.</p>
+          <p className="mt-1 text-sm text-muted">
+            Search for a stock, then select Watch to keep it here.
+          </p>
         </div>
       )}
 
       {symbols.length > 0 && (
-        <ul className="mt-10 border-t-2 border-ink">
+        <ul className="mt-6 border-t border-line">
           {symbols.map((symbol, index) => {
             const quote = quotes[index]?.data;
             const name = profiles[index]?.data?.name;
             return (
               <li key={symbol} className="border-b border-line">
-                {/* The whole row inverts on hover: black on white becomes white on black. */}
                 <Link
                   to={`/${symbol}`}
-                  className="group grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 px-3 py-5 transition-colors hover:bg-ink hover:text-page focus-visible:-outline-offset-2 sm:grid-cols-[minmax(9rem,16rem)_1fr_auto_10rem] sm:py-6"
+                  className="grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-0.5 px-3 py-3 transition-colors hover:bg-surface focus-visible:-outline-offset-2 sm:grid-cols-[6rem_1fr_auto_9.5rem]"
                 >
-                  <span className="text-4xl font-extrabold tracking-tighter sm:text-6xl">
-                    {symbol}
-                  </span>
-                  <span className="col-start-1 row-start-2 truncate text-muted group-hover:text-page/70 sm:col-start-2 sm:row-start-1">
+                  <span className="text-lg font-extrabold tracking-tight">{symbol}</span>
+                  <span className="col-start-1 row-start-2 truncate text-sm text-muted sm:col-start-2 sm:row-start-1">
                     {name}
                   </span>
-                  <span className="tabular text-right text-xl font-semibold sm:text-2xl">
-                    {formatPrice(quote?.c)}
-                  </span>
+                  <span className="tabular text-right font-semibold">{formatPrice(quote?.c)}</span>
                   <PriceChange
                     change={quote?.d}
                     percent={quote?.dp}
