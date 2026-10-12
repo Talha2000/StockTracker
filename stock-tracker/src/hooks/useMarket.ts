@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 import { market } from '@/lib/api';
 import { chartRanges, type ChartRange } from '@/lib/chartRanges';
 import { daysAgo, toIsoDate, toUnixSeconds } from '@/lib/format';
@@ -66,4 +66,6 @@ export const useSymbolSearch = (query: string) =>
     queryFn: () => market.search(query),
     enabled: query.length > 0,
     staleTime: 5 * MINUTE,
+    // Keep showing the last results while the next keystroke's search is in flight.
+    placeholderData: keepPreviousData,
   });

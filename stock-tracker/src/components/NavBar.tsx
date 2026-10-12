@@ -1,15 +1,12 @@
 import { LogOut } from 'lucide-react';
-import { Link, NavLink, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Search } from './Search';
 import { ThemeToggle } from './ThemeToggle';
 import { Button } from './ui/button';
 import { useAuth } from '@/context/auth';
-import { useWatchlist } from '@/hooks/useWatchlist';
-import { cn } from '@/lib/utils';
 
 export const NavBar = () => {
   const { isAuthenticated, logout } = useAuth();
-  const { data: watchlist } = useWatchlist();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -24,26 +21,12 @@ export const NavBar = () => {
         className="flex flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:py-0 lg:px-10"
       >
         <Link
-          to={isAuthenticated ? `/${watchlist?.[0] ?? 'META'}` : '/login'}
+          to={isAuthenticated ? '/' : '/login'}
           className="flex items-center gap-2 rounded-md text-lg font-extrabold tracking-tight"
         >
           <span aria-hidden="true" className="size-3.5 rounded-[5px] bg-mark ring-1 ring-ink/15" />
           Stocktracker
         </Link>
-
-        {isAuthenticated && (
-          <NavLink
-            to="/watchlist"
-            className={({ isActive }) =>
-              cn(
-                'rounded-md text-sm font-semibold text-muted hover:text-ink',
-                isActive && 'text-ink underline decoration-2 underline-offset-8',
-              )
-            }
-          >
-            Watchlist
-          </NavLink>
-        )}
 
         {isAuthenticated && (
           <div className="order-last w-full md:order-0 md:w-80 xl:w-96">

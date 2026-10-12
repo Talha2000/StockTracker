@@ -175,9 +175,11 @@ update all skills and docs.
 - [x] Every screen moved onto the system, full width (no centered column): stock pages get a sticky
       "Your list" rail (strip on mobile), then the block (ticker, price, change chip, day range,
       edge-to-edge axis-free chart), then News (compact two-column list, small thumbnails) with Key facts
-      beside it; search moved into the nav; auth pages are a full-bleed split; Portfolio renamed Watchlist
-      (it was one), compact rows, with `/portfolio` redirecting. A third pass condensed everything after
-      owner feedback (smaller type and images, tighter spacing).
+      beside it; search moved into the nav; auth pages are a full-bleed split. A third pass condensed
+      everything after owner feedback (smaller type and images, tighter spacing). Then, per owner feedback
+      that three ways to see the watchlist made no sense, the separate Watchlist page and nav link were
+      removed: the rail is the only watchlist, `/` opens your first watched stock, and `/watchlist` and
+      `/portfolio` redirect there. Search became a debounced typeahead (pulled forward from Phase 4).
       Removed the BUY/SELL buttons, which did nothing. Old `Card`, `.btn-action`, `.field` styles deleted.
 - [x] Accessibility baseline: visible `:focus-visible` rings (marigold on ultramarine), reduced motion
       (global CSS + Recharts), labelled controls, `role="status"` on loading states, sentence-case copy.
@@ -190,5 +192,6 @@ update all skills and docs.
 ## Phase 4: UX
 - [ ] Dashboard: watchlist with sparklines, market overview, skeletons.
 - [ ] Stock detail: interactive chart (1D-5Y), key stats, news.
-- [ ] Ctrl+K search palette (debounced); portfolio allocation and gain/loss.
+- [ ] Ctrl+K shortcut to focus search (debounced typeahead itself already done in Phase 3); portfolio
+      allocation and gain/loss (decide with the owner where this lives, since the watchlist is now the rail).
 - [ ] Mobile-first, empty/error states, e2e coverage for every flow; final retro and docs refresh.

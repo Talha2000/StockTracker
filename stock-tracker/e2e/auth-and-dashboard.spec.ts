@@ -43,7 +43,7 @@ test('signs in and shows the stock dashboard', async ({ page }) => {
   await expect(stock.getByText('Meta Platforms Inc')).toBeVisible();
   await expect(stock.getByRole('button', { name: 'Remove META from watchlist' })).toBeVisible();
   await expect(
-    page.getByRole('navigation', { name: 'Your watchlist' }).getByRole('link', { name: /META/ }),
+    page.getByRole('navigation', { name: 'Watchlist' }).getByRole('link', { name: /META/ }),
   ).toHaveAttribute('aria-current', 'page');
 });
 
@@ -63,20 +63,46 @@ test('stays signed in across a reload (session cookie, not client-held token)', 
   await expect(page.getByRole('heading', { name: 'META' })).toBeVisible();
 });
 
-test('lists watched stocks on the watchlist page, including from the old /portfolio URL', async ({
-  page,
-}) => {
+test('old /watchlist and /portfolio links open the first watched stock', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Username').fill('alice');
   await page.getByLabel('Password').fill('Correct1!');
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page).toHaveURL(/\/META$/);
 
-  await page.goto('/portfolio');
-  await expect(page).toHaveURL(/\/watchlist$/);
-  await expect(page.getByRole('heading', { name: 'Watchlist' })).toBeVisible();
-  await page.getByRole('link', { name: /^META/ }).click();
+  for (const old of ['/watchlist', '/portfolio']) {
+    await page.goto(old);
+    await expect(page).toHaveURL(/\/META$/);
+    await expect(page.getByRole('heading', { name: 'Watchlist' })).toBeVisible();
+  }
+});
+
+test('search suggests stocks as you type, debounced, and opens the one you pick', async ({
+  page,
+}) => {
+  const searches: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('/api/market/search')) searches.push(request.url());
+  });
+  await page.goto('/login');
+  await page.getByLabel('Username').fill('alice');
+  await page.getByLabel('Password').fill('Correct1!');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.goto('/AAPL');
+
+  const box = page.getByRole('combobox', { name: 'Search stocks' });
+  // Typed faster than the debounce: only the settled query should hit the API.
+  await box.pressSequentially('meta', { delay: 40 });
+  const option = page.getByRole('option', { name: /META PLATFORMS/ });
+  await expect(option).toBeVisible();
+  expect(searches).toHaveLength(1);
+  expect(searches[0]).toContain('q=meta');
+
+  await box.press('ArrowDown');
+  await expect(option).toHaveAttribute('aria-selected', 'true');
+  await box.press('Enter');
   await expect(page).toHaveURL(/\/META$/);
+  await expect(box).toHaveValue('');
 });
 
 test('rejects invalid symbols in the URL', async ({ page }) => {

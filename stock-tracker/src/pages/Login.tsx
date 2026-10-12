@@ -27,7 +27,7 @@ export const Login = () => {
     setError(null);
     const result = await login(inputs);
     setLoading(false);
-    if (result.ok) void navigate('/META');
+    if (result.ok) void navigate('/');
     else setError(result.error);
   };
 

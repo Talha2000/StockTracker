@@ -41,7 +41,12 @@ once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
 - `src/lib` (api client + zod schemas, formatters, `utils.ts` = `cn()`), `src/hooks` (TanStack Query),
   `src/context` (`*.ts` = context + hook, `*Provider.tsx` = component; split for react-refresh),
   `src/components` (app components), `src/components/ui` (design-system primitives), `src/pages`.
-- Routes: `/login`, `/register`, `/watchlist` (`/portfolio` redirects there), `/:symbol` (stock page).
+- Routes: `/login`, `/register`, `/` (opens the first watched stock, `pages/Home.tsx`), `/:symbol` (stock
+  page). **The watchlist has exactly one home: the `WatchlistRail` column beside every stock page** (owner
+  found separate nav link + page + rail confusing, 2026-10-11). `/watchlist` and `/portfolio` redirect to `/`.
+  Don't add a second watchlist view without asking.
+- Search (`components/Search.tsx`) is an ARIA combobox: suggestions as you type, debounced 300ms
+  (`hooks/useDebouncedValue.ts`), arrow keys + Enter, Escape closes; `keepPreviousData` avoids flicker.
 - Import via `@/` alias. Validate every API response with zod in `lib/api.ts`; no `any`.
 - Theme = `dark` class on `<html>`; style with Tailwind `dark:` variants, never JS ternaries on theme.
 - **TypeScript is pinned to ~6** (client and API): typescript-eslint does not support TS 7 yet. Revisit
@@ -85,7 +90,7 @@ Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `
   `.chart-dot` in `index.css` colors the marigold point via CSS instead). Wrap it in `on-block` so focus
   rings switch to `block-ring`.
 - **Layout is full width**, not a centered column: pages pad `px-4 sm:px-6 lg:px-10` and use the space.
-  Stock pages have a sticky "Your list" rail on the left (`WatchlistRail`; a swipeable strip under `lg`).
+  Stock pages have a sticky Watchlist rail on the left (`WatchlistRail`; a swipeable strip under `lg`).
 - **Condensed (owner feedback 2026-10-11: "more condensed and cleaner, images too large"):** the block is
   the only large element (ticker `text-ticker`, max 4rem; edge-to-edge, axis-free chart, max 15rem tall).
   Everything else is dense and quiet: section headings `text-lg`, body `text-sm`, hairline `border-line`
