@@ -2,10 +2,8 @@ import { lazy, Suspense } from 'react';
 import { useParams } from 'react-router';
 import { CompanyNews } from '@/components/CompanyNews';
 import { Overview } from '@/components/Overview';
-import { Search } from '@/components/Search';
-import { Spinner } from '@/components/Spinner';
 import { StockInfo } from '@/components/StockInfo';
-import { WatchlistActions } from '@/components/WatchlistActions';
+import { WatchlistRail } from '@/components/WatchlistRail';
 import { isValidSymbol } from '@/lib/format';
 
 // Recharts is the heaviest dependency; load it only when a chart is shown.
@@ -15,36 +13,40 @@ export const Dashboard = () => {
   const { symbol } = useParams();
 
   return (
-    <div className="grid w-full grid-cols-1 gap-6 p-8 md:grid-cols-2 xl:grid-cols-3">
-      <div className="flex items-center justify-start md:col-span-2 xl:col-span-3">
-        <Search />
-      </div>
+    <div className="lg:flex">
+      <WatchlistRail />
 
-      {isValidSymbol(symbol) ? (
-        <>
-          <div className="h-40">
-            <Overview symbol={symbol} />
+      <div className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
+        {isValidSymbol(symbol) ? (
+          <>
+            <section
+              aria-labelledby="ticker-heading"
+              className="on-block overflow-hidden rounded-block bg-block text-on-block"
+            >
+              <Overview symbol={symbol} />
+              {/* Same height as the chart + range toggle, so the block doesn't jump when Recharts arrives. */}
+              <Suspense fallback={<div className="h-62 sm:h-71 xl:h-79" />}>
+                <Chart symbol={symbol} />
+              </Suspense>
+            </section>
+
+            {/* Key facts on the left beside the news on wide screens, above it on narrow ones. */}
+            <div className="mt-8 grid gap-8 xl:grid-cols-[18rem_minmax(0,1fr)] xl:gap-12">
+              <StockInfo symbol={symbol} />
+              <CompanyNews symbol={symbol} />
+            </div>
+          </>
+        ) : (
+          <div className="py-10">
+            <p role="alert" className="text-2xl font-extrabold tracking-tight">
+              That is not a valid stock symbol.
+            </p>
+            <p className="mt-2 text-muted">
+              Search for a company or symbol at the top of the page.
+            </p>
           </div>
-          <div className="h-80 md:col-span-2 xl:row-span-2">
-            <Suspense fallback={<Spinner label="Loading chart" />}>
-              <Chart symbol={symbol} />
-            </Suspense>
-          </div>
-          <div className="h-80">
-            <StockInfo symbol={symbol} />
-          </div>
-          <div className="h-40">
-            <WatchlistActions symbol={symbol} />
-          </div>
-          <div className="h-80">
-            <CompanyNews symbol={symbol} />
-          </div>
-        </>
-      ) : (
-        <p role="alert" className="md:col-span-2 xl:col-span-3">
-          That is not a valid stock symbol.
-        </p>
-      )}
+        )}
+      </div>
     </div>
   );
 };

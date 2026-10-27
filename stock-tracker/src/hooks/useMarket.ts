@@ -1,23 +1,31 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 import { market } from '@/lib/api';
 import { chartRanges, type ChartRange } from '@/lib/chartRanges';
 import { daysAgo, toIsoDate, toUnixSeconds } from '@/lib/format';
 
 const MINUTE = 60_000;
 
-export const useQuote = (symbol: string) =>
-  useQuery({
-    queryKey: ['quote', symbol],
-    queryFn: () => market.quote(symbol),
-    refetchInterval: MINUTE,
-  });
+const quoteQuery = (symbol: string) => ({
+  queryKey: ['quote', symbol],
+  queryFn: () => market.quote(symbol),
+  refetchInterval: MINUTE,
+});
 
-export const useProfile = (symbol: string) =>
-  useQuery({
-    queryKey: ['profile', symbol],
-    queryFn: () => market.profile(symbol),
-    staleTime: 60 * MINUTE,
-  });
+const profileQuery = (symbol: string) => ({
+  queryKey: ['profile', symbol],
+  queryFn: () => market.profile(symbol),
+  staleTime: 60 * MINUTE,
+});
+
+export const useQuote = (symbol: string) => useQuery(quoteQuery(symbol));
+
+export const useProfile = (symbol: string) => useQuery(profileQuery(symbol));
+
+/** One result per symbol, same order; shares the cache with useQuote/useProfile. */
+export const useQuotes = (symbols: string[]) => useQueries({ queries: symbols.map(quoteQuery) });
+
+export const useProfiles = (symbols: string[]) =>
+  useQueries({ queries: symbols.map(profileQuery) });
 
 export const useNews = (symbol: string) =>
   useQuery({
@@ -58,4 +66,6 @@ export const useSymbolSearch = (query: string) =>
     queryFn: () => market.search(query),
     enabled: query.length > 0,
     staleTime: 5 * MINUTE,
+    // Keep showing the last results while the next keystroke's search is in flight.
+    placeholderData: keepPreviousData,
   });

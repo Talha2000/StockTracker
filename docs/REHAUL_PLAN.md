@@ -161,14 +161,37 @@ update all skills and docs.
       https://mystocktracker.vercel.app ↔ https://stock-tracker-lake-tau.vercel.app), Twelve Data candles
       still correct, source still not exposed.
 
-**Phase 2 is done.** Next: Phase 3 (design system), starting only once explicitly asked to move on.
+**Phase 2 is done.**
 
-## Phase 3: Design system
-- [ ] Tokens (color, type scale, radius, spacing), light/dark themes, base components (shadcn/ui).
-- [ ] Web font, Storybook optional. Accessibility baseline (contrast, focus, reduced motion).
+## Phase 3: Design system [x] (branch `phase3/design-system`)
+- [x] Tokens in `src/index.css` (semantic colors swapped under `.dark`, radius by hierarchy, display type
+      sizes). First pass was ultramarine + marigold; after review the owner asked for a black/white,
+      Wealthsimple-like base and picked black + marigold from five rendered options (2026-10-11). The block
+      inverts with the theme; marigold is the one accent. Green/red only for price movement.
+      All text pairs checked for WCAG AA (price colors darkened to pass on the page background).
+- [x] Base components, shadcn-style in `src/components/ui` (Button, Input, Label, Skeleton, ToggleGroup on
+      Radix) + `components.json` for the shadcn CLI. Only what the app uses; Dialog etc. come with Phase 4.
+- [x] Web font: Schibsted Grotesk Variable, self-hosted (`@fontsource-variable`, ~67 KB woff2).
+- [x] Every screen moved onto the system, full width (no centered column): stock pages get a sticky
+      "Your list" rail (strip on mobile), then the block (ticker, price, change chip, day range,
+      edge-to-edge axis-free chart), then News (compact two-column list, small thumbnails) with Key facts
+      beside it; search moved into the nav; auth pages are a full-bleed split. A third pass condensed
+      everything after owner feedback (smaller type and images, tighter spacing). Then, per owner feedback
+      that three ways to see the watchlist made no sense, the separate Watchlist page and nav link were
+      removed: the rail is the only watchlist, `/` opens your first watched stock, and `/watchlist` and
+      `/portfolio` redirect there. Search became a debounced typeahead (pulled forward from Phase 4).
+      Removed the BUY/SELL buttons, which did nothing. Old `Card`, `.btn-action`, `.field` styles deleted.
+- [x] Accessibility baseline: visible `:focus-visible` rings (marigold on ultramarine), reduced motion
+      (global CSS + Recharts), labelled controls, `role="status"` on loading states, sentence-case copy.
+- [x] Storybook skipped on purpose: overhead without payoff at this size; browser-verify covers it.
+- [x] Verified: lint, typecheck, unit (7), e2e (14, incl. new watchlist/redirect test), build; browser-verify
+      at 1440 and 390 in both themes; self-review findings fixed (unchecked tooltip cast, wrong-state flash).
+- [x] Retro done: stale skill entries fixed (Render/Mongo/`npm start`), lessons logged, CLAUDE.md design
+      section rewritten to describe the real system.
 
 ## Phase 4: UX
 - [ ] Dashboard: watchlist with sparklines, market overview, skeletons.
 - [ ] Stock detail: interactive chart (1D-5Y), key stats, news.
-- [ ] Ctrl+K search palette (debounced); portfolio allocation and gain/loss.
+- [ ] Ctrl+K shortcut to focus search (debounced typeahead itself already done in Phase 3); portfolio
+      allocation and gain/loss (decide with the owner where this lives, since the watchlist is now the rail).
 - [ ] Mobile-first, empty/error states, e2e coverage for every flow; final retro and docs refresh.

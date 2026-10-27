@@ -1,86 +1,144 @@
 import { Search as SearchIcon, X } from 'lucide-react';
-import { useState, type SubmitEvent } from 'react';
+import { useId, useState, type KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useSymbolSearch } from '@/hooks/useMarket';
+import { cn } from '@/lib/utils';
 
+const DEBOUNCE_MS = 300;
+const MAX_RESULTS = 8;
+
+/** Typeahead: suggestions appear as you type (debounced), pick with mouse or arrow keys + Enter. */
 export const Search = () => {
   const [input, setInput] = useState('');
-  const [submitted, setSubmitted] = useState('');
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
   const navigate = useNavigate();
-  const { data, isFetching, isError } = useSymbolSearch(submitted);
+  const listId = useId();
 
-  const results = submitted && input ? (data?.result ?? []) : [];
+  const query = useDebouncedValue(input.trim(), DEBOUNCE_MS);
+  const { data, isFetching, isError } = useSymbolSearch(query);
 
-  const handleSubmit = (event: SubmitEvent) => {
-    event.preventDefault();
-    setSubmitted(input.trim());
-  };
+  const results = query ? (data?.result.slice(0, MAX_RESULTS) ?? []) : [];
+  const settled = query === input.trim() && !isFetching;
+  const showList = open && input.trim().length > 0;
 
   const clear = () => {
     setInput('');
-    setSubmitted('');
+    setActive(-1);
   };
 
   const select = (symbol: string) => {
     clear();
+    setOpen(false);
     void navigate(`/${symbol}`);
   };
 
-  return (
-    <div className="relative z-50 w-full max-w-96">
-      <form
-        role="search"
-        onSubmit={handleSubmit}
-        className="flex items-center rounded-md border-2 border-black bg-white dark:border-neutral-200"
-      >
-        <input
-          type="text"
-          value={input}
-          aria-label="Search stocks"
-          className="w-full rounded-md px-4 py-2 text-black focus:outline-none"
-          placeholder="Search stock…"
-          onChange={(event) => {
-            setInput(event.target.value);
-          }}
-        />
-        {input && (
-          <button type="button" onClick={clear} aria-label="Clear search" className="m-1">
-            <X className="h-4 w-4 text-gray-500" />
-          </button>
-        )}
-        <button
-          type="submit"
-          aria-label="Search"
-          className="m-1 flex h-8 w-8 items-center justify-center rounded-md bg-cyan-800 text-gray-100 hover:ring-2 hover:ring-cyan-700"
-        >
-          <SearchIcon className="h-4 w-4" />
-        </button>
-      </form>
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowDown' && results.length > 0) {
+      event.preventDefault();
+      setOpen(true);
+      setActive((i) => (i + 1) % results.length);
+    } else if (event.key === 'ArrowUp' && results.length > 0) {
+      event.preventDefault();
+      setActive((i) => (i <= 0 ? results.length - 1 : i - 1));
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      const pick = results[active] ?? results[0];
+      if (pick) select(pick.symbol);
+    } else if (event.key === 'Escape') {
+      if (showList) setOpen(false);
+      else clear();
+    }
+  };
 
-      {isFetching && <p className="mt-1 text-sm">Searching…</p>}
-      {isError && (
-        <p role="alert" className="mt-1 text-sm text-red-500">
-          Search failed. Try again.
-        </p>
+  return (
+    <div role="search" className="relative">
+      <SearchIcon
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted"
+      />
+      <input
+        type="text"
+        role="combobox"
+        aria-label="Search stocks"
+        aria-expanded={showList}
+        aria-controls={listId}
+        aria-autocomplete="list"
+        aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
+        autoComplete="off"
+        spellCheck={false}
+        value={input}
+        placeholder="Search a company or symbol"
+        className="h-10 w-full rounded-full bg-surface pr-10 pl-10 text-sm text-ink ring-1 ring-line ring-inset placeholder:text-muted hover:ring-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        onChange={(event) => {
+          setInput(event.target.value);
+          setActive(-1);
+          setOpen(true);
+        }}
+        onFocus={() => {
+          setOpen(true);
+        }}
+        onBlur={() => {
+          setOpen(false);
+        }}
+        onKeyDown={onKeyDown}
+      />
+      {input && (
+        <button
+          type="button"
+          onClick={clear}
+          aria-label="Clear search"
+          className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-muted hover:bg-ink/6 hover:text-ink"
+        >
+          <X aria-hidden="true" className="size-4" />
+        </button>
       )}
 
-      {results.length > 0 && (
-        <ul className="custom-scrollbar absolute top-12 h-64 w-full overflow-y-scroll rounded-md border-2 border-gray-700 bg-white text-black dark:border-gray-800 dark:bg-gray-900 dark:text-white">
-          {results.map((item) => (
-            <li key={item.symbol}>
-              <button
-                type="button"
+      {showList && (
+        <div className="absolute inset-x-0 top-12 z-40 overflow-hidden rounded-panel bg-page shadow-[0_12px_40px_-12px_rgb(0_0_0/0.3)] ring-1 ring-line">
+          {isError && (
+            <p role="alert" className="px-4 py-3 text-sm text-down">
+              Search isn’t available right now. Try again in a moment.
+            </p>
+          )}
+          {!isError && results.length === 0 && (
+            <p className="px-4 py-3 text-sm text-muted">
+              {settled ? `No stocks match “${input.trim()}”.` : 'Searching…'}
+            </p>
+          )}
+          {/* Options take mouse clicks; keyboard selection goes through the input (combobox pattern). */}
+          <ul
+            id={listId}
+            role="listbox"
+            aria-label="Matching stocks"
+            className={cn('max-h-80 overflow-y-auto p-1.5', results.length === 0 && 'hidden')}
+          >
+            {results.map((item, index) => (
+              // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- keys handled on the combobox input
+              <li
+                key={item.symbol}
+                id={`${listId}-${index}`}
+                role="option"
+                aria-selected={index === active}
+                // mousedown would blur the input (closing the list) before the click lands.
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
                 onClick={() => {
                   select(item.symbol);
                 }}
-                className="m-2 flex w-[calc(100%-1rem)] items-center justify-between rounded-md p-4 text-left transition duration-200 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
+                onMouseEnter={() => {
+                  setActive(index);
+                }}
+                className="flex cursor-pointer items-baseline gap-3 rounded-lg px-3 py-2 aria-selected:bg-ink/6"
               >
-                <span>{item.symbol}</span>
-                <span>{item.description}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+                <span className="w-20 shrink-0 text-sm font-bold">{item.displaySymbol}</span>
+                <span className="truncate text-sm text-muted">{item.description}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

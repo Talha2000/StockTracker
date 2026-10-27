@@ -1,6 +1,9 @@
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router';
-import { Spinner } from '@/components/Spinner';
+import { AuthLayout } from '@/components/AuthLayout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/auth';
 
 export const Login = () => {
@@ -24,71 +27,69 @@ export const Login = () => {
     setError(null);
     const result = await login(inputs);
     setLoading(false);
-    if (result.ok) void navigate('/META');
+    if (result.ok) void navigate('/');
     else setError(result.error);
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-6">
+    <AuthLayout>
+      <h1 className="text-3xl font-extrabold tracking-tight">Sign in to your account</h1>
+
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
-        className="flex w-full max-w-md flex-col rounded-lg bg-black p-10 text-white shadow-2xl dark:bg-gray-800"
+        className="mt-6 flex flex-col gap-4"
       >
-        <h1 className="pb-8 text-3xl font-bold">Sign in to your account</h1>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            required
+            value={inputs.username}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label htmlFor="username" className="mb-2 block text-sm font-medium">
-          Username
-        </label>
-        <input
-          id="username"
-          name="username"
-          type="text"
-          autoComplete="username"
-          required
-          className="field mb-6"
-          value={inputs.username}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="password" className="mb-2 block text-sm font-medium">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="field mb-6"
-          value={inputs.password}
-          onChange={handleChange}
-        />
-
-        {loading ? (
-          <Spinner label="Signing in" />
-        ) : (
-          <button
-            type="submit"
-            className="mb-3 w-full rounded-lg bg-sky-600 px-5 py-2.5 text-lg font-medium hover:bg-cyan-700 focus:ring-4 focus:outline-none"
-          >
-            Sign in
-          </button>
-        )}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={inputs.password}
+            onChange={handleChange}
+          />
+        </div>
 
         {error && (
-          <p role="alert" className="text-center text-red-400">
+          <p
+            role="alert"
+            className="rounded-field bg-down-soft px-4 py-3 text-sm font-medium text-down"
+          >
             {error}
           </p>
         )}
-        <span>
-          Don&apos;t have an account?{' '}
-          <Link to="/register" className="text-cyan-300 underline">
-            Sign up
-          </Link>
-        </span>
+
+        <Button type="submit" disabled={loading} className="mt-2 w-full">
+          {loading ? 'Signing in…' : 'Sign in'}
+        </Button>
       </form>
-    </div>
+
+      <p className="mt-6 text-muted">
+        New here?{' '}
+        <Link
+          to="/register"
+          className="font-semibold text-accent-text underline-offset-4 hover:underline"
+        >
+          Create an account
+        </Link>
+      </p>
+    </AuthLayout>
   );
 };

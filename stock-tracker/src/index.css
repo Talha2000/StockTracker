@@ -1,34 +1,152 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/schibsted-grotesk/wght.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Design tokens. Components use the semantic names (bg-page, text-ink, bg-block…),
+ * never raw hex, so a theme or palette is just a different set of values.
+ *
+ * Black and white, plus one accent: marigold. The signature "block" inverts with the
+ * theme (black on a white page, white on a black page); marigold is the same in both.
+ * Up/down are reserved for price movement only.
+ */
+:root {
+  --page: #ffffff;
+  --surface: #f4f4f4;
+  --ink: #000000;
+  --muted: #6b6b6b;
+  --line: #e4e4e4;
+  --up: #087a4b;
+  --down: #c02a3e;
+  --up-soft: #dff3e9;
+  --down-soft: #fbe3e6;
+
+  --block: #000000;
+  --on-block: #ffffff;
+  --on-block-muted: #a3a3a3;
+  --block-chip: #ffffff;
+
+  /* Marigold: selected chart range, hovered chart point, current stock in the rail, logo. */
+  --highlight: #ffc94a;
+  --on-highlight: #000000;
+  --mark: #ffc94a;
+  --accent-text: #000000;
+  --ring: #000000;
+  --block-ring: #ffffff;
+  --primary: #000000;
+  --on-primary: #ffffff;
+}
+
+.dark {
+  --page: #000000;
+  --surface: #161616;
+  --ink: #ffffff;
+  --muted: #a3a3a3;
+  --line: #2a2a2a;
+  --up: #5bd69b;
+  --down: #ff7a8a;
+  --up-soft: rgb(91 214 155 / 0.14);
+  --down-soft: rgb(255 122 138 / 0.14);
+
+  --block: #ffffff;
+  --on-block: #000000;
+  --on-block-muted: #5c5c5c;
+  --block-chip: #eeeeee;
+
+  --accent-text: #ffffff;
+  --ring: #ffffff;
+  --block-ring: #000000;
+  --primary: #ffffff;
+  --on-primary: #000000;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-up-soft: var(--up-soft);
+  --color-down-soft: var(--down-soft);
+  --color-block: var(--block);
+  --color-on-block: var(--on-block);
+  --color-on-block-muted: var(--on-block-muted);
+  --color-block-chip: var(--block-chip);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-mark: var(--mark);
+  --color-accent-text: var(--accent-text);
+  --color-ring: var(--ring);
+  --color-block-ring: var(--block-ring);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+}
+
 @theme {
-  --color-main-bg: #030712;
+  /* Price colors for the chip on the block: always on a light chip, so always the dark variants. */
+  --color-up-ink: #087a4b;
+  --color-down-ink: #c02a3e;
+
+  --font-sans: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Radius follows hierarchy: the signature block is the softest, controls are pills. */
+  --radius-block: 1.25rem;
+  --radius-panel: 1rem;
+  --radius-field: 0.875rem;
+
+  /* Display sizes for tickers and prices; body steps use Tailwind's defaults. */
+  --text-ticker: clamp(2.5rem, 5vw, 4rem);
+  --text-ticker--line-height: 0.9;
+  --text-ticker--letter-spacing: -0.04em;
+  --text-price: clamp(1.75rem, 3vw, 2.25rem);
+  --text-price--line-height: 1;
+  --text-price--letter-spacing: -0.03em;
 }
 
 @layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-neutral-200 text-black transition-colors duration-200 dark:bg-main-bg dark:text-white;
+    @apply bg-page font-sans text-ink;
+  }
+
+  ::selection {
+    @apply bg-ink text-page;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* On the block, the page's focus ring would disappear into the background. */
+  .on-block :focus-visible {
+    @apply outline-block-ring;
+  }
+
+  /* Recharts takes colors as SVG attributes, which can't read CSS variables; CSS can. */
+  .chart-dot {
+    fill: var(--highlight);
+    stroke: var(--on-block);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-@layer components {
-  .btn-action {
-    @apply flex h-12 min-w-28 cursor-pointer items-center justify-center rounded-md border border-white bg-black px-4 font-bold text-neutral-200 shadow-2xl hover:bg-neutral-300 hover:text-neutral-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-cyan-400 dark:bg-cyan-500 dark:hover:bg-[#1f1f38] dark:hover:text-neutral-200;
-  }
-
-  .field {
-    @apply block w-full rounded-lg border border-gray-600 bg-white p-2.5 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #a5b4fc;
-    border-radius: 10px;
-  }
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }

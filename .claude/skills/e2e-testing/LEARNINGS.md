@@ -6,8 +6,12 @@
 - 2026-09-24: Run `npx playwright install chromium` once on a fresh machine.
 - 2026-09-24: Playwright `webServer` reuses a running dev server locally, so a stale server can mask config
   changes; restart it after editing `vite.config.ts`.
-- Gaps to fill next: watchlist add/remove round-trip, portfolio page, search, theme toggle,
-  API 500/429 error states, axe accessibility checks. (Register flow now covered.)
+- Gaps to fill next: watchlist add/remove round-trip, search, theme toggle, chart range switching,
+  API 500/429 error states, axe accessibility checks. (Register flow and the watchlist page, including the
+  old `/portfolio` redirect, now covered.)
+- 2026-10-11: Phase 3 kept every heading and aria-label the suite selects on ("Sign in to your account",
+  "Sign up", `heading META`, "Remove META from watchlist"). Grep the spec for visible text before changing
+  copy, and `getByText` must stay unique (the company name is in the hero only, not repeated in Key facts).
 - 2026-10-11: Mocks can't catch everything, specifically real cookie/redirect interactions — found a real
   bug (global 401 handler firing for an expected 401, force-navigating every page to /login) only by
   running the actual flow in a real browser against the real local API. When a mock replaces a mechanism

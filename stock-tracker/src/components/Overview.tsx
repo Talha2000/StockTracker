@@ -1,36 +1,77 @@
-import { Card } from './Card';
+import { PriceChange } from './PriceChange';
+import { WatchButton } from './WatchButton';
+import { Skeleton } from './ui/skeleton';
 import { useProfile, useQuote } from '@/hooks/useMarket';
-import { formatChange, formatPercent, formatPrice } from '@/lib/format';
+import { formatPrice } from '@/lib/format';
 
+/** The top of the block: ticker, company, price, today's move and the day's range. */
 export const Overview = ({ symbol }: { symbol: string }) => {
   const { data: quote, isPending, isError } = useQuote(symbol);
   const { data: profile } = useProfile(symbol);
 
-  const positive = (quote?.d ?? 0) >= 0;
+  const dayStats: [string, number | undefined][] = [
+    ['Open', quote?.o],
+    ['High', quote?.h],
+    ['Low', quote?.l],
+    ['Prev close', quote?.pc],
+  ];
 
   return (
-    <Card>
-      <div className="flex h-full w-full flex-col items-center justify-around p-5 pt-10 sm:flex-row">
-        <h1 className="absolute top-4 left-4 text-xl font-bold 2xl:text-2xl">{symbol}</h1>
-        {isError ? (
-          <p role="alert" className="text-red-500">
-            Could not load quote
-          </p>
-        ) : isPending ? (
-          <p aria-busy="true">Loading…</p>
-        ) : (
-          <>
-            <span className="flex items-center text-3xl xl:text-4xl">
-              {formatPrice(quote.c)}
-              <span className="ml-2 text-lg font-bold text-neutral-400">{profile?.currency}</span>
-            </span>
-            <span className={`text-xl xl:text-2xl ${positive ? 'text-lime-600' : 'text-red-500'}`}>
-              {formatChange(quote.d)}
-              <span className="p-1">({formatPercent(quote.dp)})</span>
-            </span>
-          </>
-        )}
+    <div className="px-5 pt-5 sm:px-7 sm:pt-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 id="ticker-heading" className="text-ticker font-extrabold wrap-break-word">
+              {symbol}
+            </h1>
+            {profile?.name && (
+              <p className="truncate font-medium text-on-block-muted">{profile.name}</p>
+            )}
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            {isError ? (
+              <p role="alert" className="font-medium">
+                Couldn’t load the latest price.
+              </p>
+            ) : isPending ? (
+              <>
+                <span className="sr-only" role="status">
+                  Loading price…
+                </span>
+                <Skeleton className="h-9 w-44 bg-on-block/15" />
+              </>
+            ) : (
+              <>
+                <p className="text-price font-bold">
+                  {formatPrice(quote.c)}
+                  {profile?.currency && (
+                    <span className="ml-1.5 text-sm font-semibold tracking-normal text-on-block-muted">
+                      {profile.currency}
+                    </span>
+                  )}
+                </p>
+                <span className="flex items-center gap-2">
+                  <PriceChange tone="onBlock" change={quote.d} percent={quote.dp} />
+                  <span className="text-sm text-on-block-muted">today</span>
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+        <WatchButton symbol={symbol} />
       </div>
-    </Card>
+
+      {quote && (
+        <dl className="mt-5 grid grid-cols-4 gap-3 text-xs whitespace-nowrap sm:flex sm:gap-8 sm:text-sm">
+          {dayStats.map(([label, value]) => (
+            <div key={label}>
+              <dt className="text-on-block-muted">{label}</dt>
+              <dd className="font-semibold">{formatPrice(value)}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
   );
 };

@@ -38,8 +38,15 @@ comment), `ACCESS_TOKEN` (JWT secret — set on both; any local value works for 
 once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
 
 ## Structure and conventions
-- `src/lib` (api client + zod schemas, formatters), `src/hooks` (TanStack Query), `src/context`
-  (`*.ts` = context + hook, `*Provider.tsx` = component; split for react-refresh), `src/components`, `src/pages`.
+- `src/lib` (api client + zod schemas, formatters, `utils.ts` = `cn()`), `src/hooks` (TanStack Query),
+  `src/context` (`*.ts` = context + hook, `*Provider.tsx` = component; split for react-refresh),
+  `src/components` (app components), `src/components/ui` (design-system primitives), `src/pages`.
+- Routes: `/login`, `/register`, `/` (opens the first watched stock, `pages/Home.tsx`), `/:symbol` (stock
+  page). **The watchlist has exactly one home: the `WatchlistRail` column beside every stock page** (owner
+  found separate nav link + page + rail confusing, 2026-10-11). `/watchlist` and `/portfolio` redirect to `/`.
+  Don't add a second watchlist view without asking.
+- Search (`components/Search.tsx`) is an ARIA combobox: suggestions as you type, debounced 300ms
+  (`hooks/useDebouncedValue.ts`), arrow keys + Enter, Escape closes; `keepPreviousData` avoids flicker.
 - Import via `@/` alias. Validate every API response with zod in `lib/api.ts`; no `any`.
 - Theme = `dark` class on `<html>`; style with Tailwind `dark:` variants, never JS ternaries on theme.
 - **TypeScript is pinned to ~6** (client and API): typescript-eslint does not support TS 7 yet. Revisit
@@ -67,10 +74,39 @@ once; see `.claude/skills/pentest/LEARNINGS.md`, 2026-10-01).
   `skipAuthRedirect` in `src/lib/api.ts`. `logout` must clear the cookie with attributes identical to how
   `login` set it, or the browser won't recognize it as the same cookie and silently keeps it.
 
-## Design direction
-Clean, modern fintech in the style of Wealthsimple: generous whitespace, calm neutral palette with a single
-accent, large confident typography, soft radii, subtle motion, green/red reserved for price movement,
-dark and light themes, mobile-first. Use the `frontend-design` skill for UI work.
+## Design system (Phase 3)
+Modern personal fintech (Wealthsimple-adjacent, but its own identity). Use the `frontend-design` skill for UI work.
+- **Tokens live in `src/index.css`.** Style with the semantic names only: `bg-page`, `bg-surface`,
+  `text-ink`, `text-muted`, `border-line`, `bg-primary`/`text-on-primary`, `text-up`/`text-down`
+  (+ `-soft` backgrounds), and for the signature block `bg-block`/`text-on-block`/`text-on-block-muted`.
+  They swap under `.dark`. Never raw hex or Tailwind palette colors (`cyan-500`…) in components.
+- **Palette (chosen 2026-10-11 from five options):** black and white, plus one accent, marigold
+  (`bg-highlight`/`bg-mark`, #FFC94A, same in both themes). Marigold marks only "where you are / what's
+  selected": the selected chart range, the hovered chart point, the current stock in the rail, the logo.
+  It never colors text on white (fails contrast); links and focus rings are ink. Green/red are for price
+  movement only; on the block use the `PriceChange tone="onBlock"` chip (`text-up-ink`/`text-down-ink`).
+- **The block inverts with the theme:** black on the white page, white on the black page. Anything drawn on
+  it uses `on-block` colors, and the chart uses `currentColor` (SVG attributes can't read CSS variables;
+  `.chart-dot` in `index.css` colors the marigold point via CSS instead). Wrap it in `on-block` so focus
+  rings switch to `block-ring`.
+- **Layout is full width**, not a centered column: pages pad `px-4 sm:px-6 lg:px-10` and use the space.
+  Stock pages have a sticky Watchlist rail on the left (`WatchlistRail`; a swipeable strip under `lg`).
+- **Condensed (owner feedback 2026-10-11: "more condensed and cleaner, images too large"):** the block is
+  the only large element (ticker `text-ticker`, max 4rem; edge-to-edge, axis-free chart, max 15rem tall).
+  Everything else is dense and quiet: section headings `text-lg`, body `text-sm`, hairline `border-line`
+  rows, news thumbnails 56px (no hero images), Key facts as a label/value list in the left column beside the news on `xl` (owner's choice).
+  No grids of identical bordered cards. Don't scale things back up without asking.
+- **Type:** Schibsted Grotesk Variable (self-hosted via `@fontsource-variable`), one family. Headings
+  `font-extrabold tracking-tight`; sentence case; no all-caps labels. `tabular` utility only where numbers
+  must align in a column (its tabular figures look typewriter-like at display sizes).
+- **Radius by hierarchy:** `rounded-block` (signature block) > `rounded-panel` (lists, popovers) >
+  `rounded-field` (inputs, alerts); buttons and chips are pills.
+- **Primitives:** `src/components/ui/` (shadcn-style, `cn()` from `@/lib/utils`; `components.json` is set up
+  so `npx shadcn add <x>` drops new ones there — restyle them with the tokens before use). Button variants:
+  `primary`, `secondary`, `ghost`, `onBlock`, `onBlockGhost`; `asChild` to style a router `Link`.
+- **Motion:** only the chart's draw-in on load, plus feedback transitions. Respect reduced motion (global
+  rule in `index.css`; Recharts animation is disabled via `matchMedia` in `Chart.tsx`).
+- **Copy:** plain, active, sentence case. Errors say what happened and what to do; empty states invite action.
 
 ## Project skills (in `.claude/skills/`)
 - `e2e-testing`: Playwright test suite authoring and running.

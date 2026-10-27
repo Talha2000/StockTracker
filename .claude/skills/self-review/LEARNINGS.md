@@ -90,3 +90,17 @@
   for the wrong reason; also assert the cases that should *not* redirect. Fixed with a per-request opt-out
   flag; verified with a real cross-origin (by port) browser test, then added the missing mocked regression
   test once the real gap was understood.
+- 2026-10-11: Recharts' custom tooltip `payload[].payload` is untyped; casting it is an unchecked cast. Use
+  the typed `label` (x value) and `payload[0].value` with `typeof` guards, then hover-test it in a browser,
+  since a wrong guess just hides the tooltip silently.
+- 2026-10-11: Windows PowerShell 5.1 `Get-Content -Raw | ... | Set-Content -Encoding utf8` corrupts UTF-8
+  files: it reads them as ANSI (… and curly quotes became mojibake) and writes a BOM. Never round-trip
+  source through PowerShell content cmdlets; use the Edit tool, or a small Node script for regex rewrites.
+  Windows PowerShell 5.1 also strips embedded double quotes from arguments passed to native programs
+  (`node x.cjs 'size="lg"'` arrives as `size=lg`; a `git commit -m` here-string containing `"..."` gets
+  split into pathspecs). Keep `"` out of native-command arguments, or use the Edit tool.
+- 2026-10-11: Showing the same value in two places (price in the rail and in the stock block) breaks
+  `getByText` strict mode in e2e. Give each region an accessible name (`aria-labelledby`) and scope the
+  assertion to it, which also documents where the value is supposed to appear.
+- 2026-10-11: Renaming a route (`/portfolio` → `/watchlist`): keep a `<Navigate>` from the old path, or
+  bookmarks fall through to `/:symbol` and render "PORTFOLIO" as a stock.

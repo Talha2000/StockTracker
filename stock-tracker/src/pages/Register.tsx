@@ -1,9 +1,13 @@
 import { isAxiosError } from 'axios';
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Spinner } from '@/components/Spinner';
+import { AuthLayout } from '@/components/AuthLayout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { authApi } from '@/lib/api';
 
+const MIN_USERNAME_LENGTH = 3;
 const MIN_PASSWORD_LENGTH = 8;
 
 export const Register = () => {
@@ -21,8 +25,8 @@ export const Register = () => {
     event.preventDefault();
     setError(null);
 
-    if (inputs.username.trim().length < 3) {
-      setError('Username must be at least 3 characters');
+    if (inputs.username.trim().length < MIN_USERNAME_LENGTH) {
+      setError(`Username must be at least ${MIN_USERNAME_LENGTH} characters`);
       return;
     }
     if (inputs.password.length < MIN_PASSWORD_LENGTH) {
@@ -41,8 +45,8 @@ export const Register = () => {
     } catch (err) {
       setError(
         isAxiosError(err) && err.response?.status === 409
-          ? 'That user already exists'
-          : 'Error registering user',
+          ? 'That username is taken. Try another one.'
+          : 'Couldn’t create your account. Try again in a moment.',
       );
     } finally {
       setLoading(false);
@@ -50,81 +54,82 @@ export const Register = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-6">
+    <AuthLayout>
+      <h1 className="text-3xl font-extrabold tracking-tight">Sign up</h1>
+
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
         noValidate
-        className="flex w-full max-w-md flex-col rounded-lg bg-black p-10 text-white shadow-2xl dark:bg-gray-800"
+        className="mt-6 flex flex-col gap-4"
       >
-        <h1 className="pb-8 text-3xl font-bold">Sign up</h1>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            required
+            value={inputs.username}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label htmlFor="username" className="mb-2 block text-sm font-medium">
-          Username
-        </label>
-        <input
-          id="username"
-          name="username"
-          type="text"
-          autoComplete="username"
-          required
-          className="field mb-6"
-          value={inputs.username}
-          onChange={handleChange}
-        />
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            aria-describedby="password-hint"
+            required
+            value={inputs.password}
+            onChange={handleChange}
+          />
+          <p id="password-hint" className="text-sm text-muted">
+            At least {MIN_PASSWORD_LENGTH} characters.
+          </p>
+        </div>
 
-        <label htmlFor="password" className="mb-2 block text-sm font-medium">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          required
-          className="field mb-6"
-          value={inputs.password}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium">
-          Confirm password
-        </label>
-        <input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          autoComplete="new-password"
-          required
-          className="field mb-6"
-          value={inputs.confirmPassword}
-          onChange={handleChange}
-        />
-
-        {loading ? (
-          <Spinner label="Creating account" />
-        ) : (
-          <button
-            type="submit"
-            className="mb-3 w-full rounded-lg bg-sky-600 px-5 py-2.5 text-lg font-medium hover:bg-cyan-700 focus:ring-4 focus:outline-none"
-          >
-            Create account
-          </button>
-        )}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            required
+            value={inputs.confirmPassword}
+            onChange={handleChange}
+          />
+        </div>
 
         {error && (
-          <p role="alert" className="text-center text-red-400">
+          <p
+            role="alert"
+            className="rounded-field bg-down-soft px-4 py-3 text-sm font-medium text-down"
+          >
             {error}
           </p>
         )}
-        <span>
-          Already have an account?{' '}
-          <Link to="/login" className="text-cyan-300 underline">
-            Log in
-          </Link>
-        </span>
+
+        <Button type="submit" disabled={loading} className="mt-2 w-full">
+          {loading ? 'Creating account…' : 'Create account'}
+        </Button>
       </form>
-    </div>
+
+      <p className="mt-6 text-muted">
+        Already have an account?{' '}
+        <Link
+          to="/login"
+          className="font-semibold text-accent-text underline-offset-4 hover:underline"
+        >
+          Sign in
+        </Link>
+      </p>
+    </AuthLayout>
   );
 };

@@ -1,13 +1,12 @@
+import { LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
+import { Search } from './Search';
 import { ThemeToggle } from './ThemeToggle';
+import { Button } from './ui/button';
 import { useAuth } from '@/context/auth';
-import { useWatchlist } from '@/hooks/useWatchlist';
-
-const linkClass = 'block rounded py-2 text-white hover:text-cyan-300';
 
 export const NavBar = () => {
   const { isAuthenticated, logout } = useAuth();
-  const { data: watchlist } = useWatchlist();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -16,46 +15,42 @@ export const NavBar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 z-20 w-full bg-black dark:bg-gray-900">
-      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-4 p-4">
-        <span className="text-xl font-semibold whitespace-nowrap text-white">StockTracker</span>
-        <ul className="flex items-center gap-6 font-medium">
-          {isAuthenticated ? (
-            <>
-              <li>
-                <Link className={linkClass} to={`/${watchlist?.[0] ?? 'META'}`}>
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link className={linkClass} to="/portfolio">
-                  Portfolio
-                </Link>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  className={linkClass}
-                  onClick={() => {
-                    void handleLogout();
-                  }}
-                >
-                  Logout
-                </button>
-              </li>
-            </>
-          ) : (
-            <li>
-              <Link className={linkClass} to="/login">
-                Login
-              </Link>
-            </li>
+    <header className="sticky top-0 z-30 border-b border-line bg-page">
+      <nav
+        aria-label="Main"
+        className="flex flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:py-0 lg:px-10"
+      >
+        <Link
+          to={isAuthenticated ? '/' : '/login'}
+          className="flex items-center gap-2 rounded-md text-lg font-extrabold tracking-tight"
+        >
+          <span aria-hidden="true" className="size-3.5 rounded-[5px] bg-mark ring-1 ring-ink/15" />
+          Stocktracker
+        </Link>
+
+        {isAuthenticated && (
+          <div className="order-last w-full md:order-0 md:w-80 xl:w-96">
+            <Search />
+          </div>
+        )}
+
+        <div className="ml-auto flex items-center gap-1">
+          <ThemeToggle />
+          {isAuthenticated && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-3 sm:px-4"
+              onClick={() => {
+                void handleLogout();
+              }}
+            >
+              <LogOut aria-hidden="true" />
+              <span className="sr-only sm:not-sr-only">Sign out</span>
+            </Button>
           )}
-          <li>
-            <ThemeToggle />
-          </li>
-        </ul>
-      </div>
-    </nav>
+        </div>
+      </nav>
+    </header>
   );
 };
